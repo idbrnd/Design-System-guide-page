@@ -7,43 +7,62 @@
 }
 
 /*
- * 사이드바 접기/펼치기 토글 버튼을 기본 위치(사이드바 하단)에서
- * 내비게이션 바 영역으로 이동. 로고(왼쪽 끝)와 토글 버튼(오른쪽 끝)이
- * 사이드바 폭에 걸쳐 space-between 으로 양 끝에 배치되도록 한다.
- * 토글 버튼은 md 이상에서만 노출되므로 md+ 로 한정한다.
+ * 사이드바 접기/펼치기 버튼을 내비게이션 바 로고 오른쪽에 배치한다.
+ * 커스텀 버튼(.idb-sidebar-toggle)은 theme.config 의 navbar.extraContent 로
+ * 내비게이션 바 안에 렌더링되고, 클릭을 숨긴 기본 토글 버튼으로 프록시한다.
+ * 데스크톱(md+)에서만 노출한다.
  */
+
+/* 커스텀 토글 버튼 기본값: 모바일에서는 숨김 (사이드바 토글은 데스크톱 전용) */
+.idb-sidebar-toggle {
+  display: none;
+}
+
 @media (min-width: 768px) {
   .nextra-sidebar-container {
-    /* 사이드바가 transform 으로 자체 스태킹 컨텍스트를 만들어,
-       끌어올린 토글 버튼이 내비게이션 바(_z-20) 아래로 깔리는 것을 방지 */
-    z-index: 21;
-    /* 사이드바 상단 페이드 mask 가 스태킹 컨텍스트를 만들고
-       끌어올린 버튼을 마스킹해 투명하게 만들므로 제거 */
+    /*
+     * [헤더 침범 수정]
+     * 짧은 페이지에서는 본문 높이 ≈ 사이드바 높이라 sticky 가 top:64px 를 유지하지 못하고
+     * 사이드바가 위로 밀려 올라온다. 테마 기본은 사이드바를 내비게이션 바(_z-20) "뒤"에 두어
+     * 이 겹침을 가리는데, 사이드바가 transform(_transform-gpu)으로 만드는 자체 스태킹 컨텍스트가
+     * 내비게이션 바보다 위로 올라오면 겹침이 노출된다. transform·mask 를 제거해 스태킹 컨텍스트를
+     * 해제, 메뉴가 다시 내비게이션 바 뒤로 가려지도록 되돌린다. */
+    transform: none;
     -webkit-mask: none;
     mask: none;
   }
+
+  /*
+   * 기본 토글 버튼(사이드바 하단)은 숨기되 DOM 에는 남겨 클릭 프록시 대상으로 사용한다.
+   * (커스텀 버튼이 이 버튼의 .click() 을 호출해 사이드바 접힘/펼침 상태를 토글)
+   */
   .nextra-sidebar-footer {
-    /* 사이드바 폭(접힘 80px / 펼침 256px)과 무관하게
-       펼침 사이드바 폭(16rem)에 고정해 버튼을 항상 오른쪽 끝에 둔다.
-       (기준: sticky/transform 된 .nextra-sidebar-container) */
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: auto;
-    width: 16rem; /* 펼침 사이드바 폭 고정 */
-    height: var(--nextra-navbar-height, 64px);
-    margin: 0;
-    padding: 0 1.25rem; /* 오른쪽 끝 여백 (로고 왼쪽 여백과 대칭) */
-    /* 사이드바 상단(내비게이션 바 아래)에서 내비게이션 바 높이만큼 끌어올려 로고와 같은 줄에 배치 */
-    transform: translateY(calc(-1 * var(--nextra-navbar-height, 64px)));
-    z-index: 25; /* 내비게이션 바(_z-20) 위로 */
-    justify-content: flex-end; /* 버튼을 오른쪽 끝으로 */
-    align-items: center;
-    /* 로고를 가리지 않도록 배경 투명 + 투명 영역은 클릭 통과 */
-    background: transparent;
-    pointer-events: none;
+    display: none;
   }
-  .nextra-sidebar-footer > * {
-    pointer-events: auto;
+
+  /* extraContent 는 내비게이션 바 오른쪽에 렌더되므로, 절대배치로 로고 오른쪽에 옮긴다 */
+  .nextra-nav-container nav {
+    position: relative;
+  }
+  .idb-sidebar-toggle {
+    position: absolute;
+    left: 12.7rem; /* 사이드바 오른쪽 끝(로고와 space-between) */
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    color: #4b5563;
+    background: transparent;
+    cursor: pointer;
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease;
+  }
+  .idb-sidebar-toggle:hover {
+    background: #f3f4f6;
+    color: #111827;
   }
 }
