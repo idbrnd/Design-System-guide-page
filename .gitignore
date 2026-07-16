@@ -14,5 +14,6 @@ next-env.d.ts
 *.tsbuildinfo
 
 # local tooling
+.bkit
 .claude/
 .vscode/
