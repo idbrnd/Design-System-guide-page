@@ -1,0 +1,64 @@
+import { FillButton } from '@idbrnd/design-system'
+
+# 시작하기
+
+## 설치
+
+```bash
+npm install @idbrnd/design-system
+```
+
+**peerDependencies** — 프로젝트에 아래 버전이 설치되어 있어야 합니다.
+
+- `react@^18.3.1`
+- `react-dom@^18.3.1`
+
+> React 19는 아직 지원하지 않습니다. React 18 프로젝트에서 사용하세요.
+
+## 스타일 로드
+
+앱 엔트리 파일(예: `src/main.tsx`)에서 **반드시 컴포넌트보다 먼저** 스타일을 import합니다.
+이 파일에는 CSS 변수(디자인 토큰), 타이포그래피, 폰트(Pretendard) 설정이 모두 포함되어 있습니다.
+
+```tsx filename="src/main.tsx"
+import '@idbrnd/design-system/style.css'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App'
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)
+```
+
+## 첫 컴포넌트
+
+```tsx filename="src/App.tsx"
+import { FillButton } from '@idbrnd/design-system'
+
+export default function App() {
+  return <FillButton>확인</FillButton>
+}
+```
+
+렌더링 결과:
+
+<div style={{ padding: '1.5rem', border: '1px solid #e5e7eb', borderRadius: 8, margin: '1rem 0' }}>
+  <FillButton>확인</FillButton>
+</div>
+
+## TypeScript
+
+타입 선언 파일이 내장되어 있어 별도 `@types` 설치가 필요 없습니다.
+variant, size 등의 타입도 함께 export됩니다.
+
+```tsx
+import type { FillButtonProps, FillButtonVariant } from '@idbrnd/design-system'
+```
+
+## 다음 단계
+
+- [디자인 토큰](/tokens/colors) — 색상·타이포그래피 변수를 확인하세요
+- [컴포넌트](/components/buttons) — 컴포넌트별 상세 사용법을 확인하세요
