@@ -1,5 +1,6 @@
 import type { DocsThemeConfig } from 'nextra-theme-docs'
 import { useConfig } from 'nextra-theme-docs'
+import SidebarToggle from './components/SidebarToggle'
 
 const config: DocsThemeConfig = {
   logo: (
@@ -7,6 +8,10 @@ const config: DocsThemeConfig = {
       IDB Design System
     </span>
   ),
+  // 사이드바 접기/펼치기 버튼을 내비게이션 바에 직접 렌더링 (CSS 로 로고 오른쪽에 배치)
+  navbar: {
+    extraContent: <SidebarToggle />,
+  },
   project: {
     link: 'https://github.com/idbrnd/Design-System',
   },
