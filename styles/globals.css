@@ -5,3 +5,45 @@
   display: block;
   overflow-x: auto;
 }
+
+/*
+ * 사이드바 접기/펼치기 토글 버튼을 기본 위치(사이드바 하단)에서
+ * 내비게이션 바 영역으로 이동. 로고(왼쪽 끝)와 토글 버튼(오른쪽 끝)이
+ * 사이드바 폭에 걸쳐 space-between 으로 양 끝에 배치되도록 한다.
+ * 토글 버튼은 md 이상에서만 노출되므로 md+ 로 한정한다.
+ */
+@media (min-width: 768px) {
+  .nextra-sidebar-container {
+    /* 사이드바가 transform 으로 자체 스태킹 컨텍스트를 만들어,
+       끌어올린 토글 버튼이 내비게이션 바(_z-20) 아래로 깔리는 것을 방지 */
+    z-index: 21;
+    /* 사이드바 상단 페이드 mask 가 스태킹 컨텍스트를 만들고
+       끌어올린 버튼을 마스킹해 투명하게 만들므로 제거 */
+    -webkit-mask: none;
+    mask: none;
+  }
+  .nextra-sidebar-footer {
+    /* 사이드바 폭(접힘 80px / 펼침 256px)과 무관하게
+       펼침 사이드바 폭(16rem)에 고정해 버튼을 항상 오른쪽 끝에 둔다.
+       (기준: sticky/transform 된 .nextra-sidebar-container) */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: auto;
+    width: 16rem; /* 펼침 사이드바 폭 고정 */
+    height: var(--nextra-navbar-height, 64px);
+    margin: 0;
+    padding: 0 1.25rem; /* 오른쪽 끝 여백 (로고 왼쪽 여백과 대칭) */
+    /* 사이드바 상단(내비게이션 바 아래)에서 내비게이션 바 높이만큼 끌어올려 로고와 같은 줄에 배치 */
+    transform: translateY(calc(-1 * var(--nextra-navbar-height, 64px)));
+    z-index: 25; /* 내비게이션 바(_z-20) 위로 */
+    justify-content: flex-end; /* 버튼을 오른쪽 끝으로 */
+    align-items: center;
+    /* 로고를 가리지 않도록 배경 투명 + 투명 영역은 클릭 통과 */
+    background: transparent;
+    pointer-events: none;
+  }
+  .nextra-sidebar-footer > * {
+    pointer-events: auto;
+  }
+}
