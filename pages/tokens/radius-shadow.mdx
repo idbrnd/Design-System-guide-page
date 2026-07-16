@@ -1,0 +1,27 @@
+import { RadiusScale, ShadowScale } from '../../components/tokens/RadiusShadow'
+
+# 라운드 & 그림자
+
+박스를 클릭하면 `var(--이름)`이 복사됩니다.
+
+## 라운드 (border-radius)
+
+```css
+.card {
+  border-radius: var(--radius-medium);
+}
+```
+
+`--radius-max`는 완전한 원형(pill) 형태에 사용합니다.
+
+<RadiusScale />
+
+## 그림자 (shadow)
+
+```css
+.popover {
+  box-shadow: var(--shadow-level-2);
+}
+```
+
+<ShadowScale />

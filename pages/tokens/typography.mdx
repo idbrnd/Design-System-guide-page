@@ -1,0 +1,40 @@
+import TypeScale from '../../components/tokens/TypeScale'
+
+# 타이포그래피
+
+타이포그래피 토큰은 `font` 축약형(shorthand) 값으로 제공됩니다.
+행을 클릭하면 `var(--이름)`이 복사됩니다.
+
+```css
+.title {
+  font: var(--text-heading-1-semibold);
+}
+```
+
+기본 폰트는 **Pretendard**이며 `style.css`에 포함되어 있습니다.
+
+> **주의** — 토큰의 font 축약형이 가리키는 폰트 이름은 `Pretendard Variable`이지만,
+> `style.css`에 내장된 `@font-face` 이름은 `PretendardMetricAdjusted`입니다.
+> 프로젝트에 Pretendard Variable을 별도로 설치하지 않았다면 `font: var(--text-…)` 사용 시
+> `font-family: PretendardMetricAdjusted`를 함께 지정하세요.
+>
+> ```css
+> .title {
+>   font: var(--text-heading-1-semibold);
+>   font-family: PretendardMetricAdjusted, 'Pretendard Variable', sans-serif;
+> }
+> ```
+
+## 스케일
+
+<TypeScale />
+
+## 네이밍 규칙
+
+`--text-{계층}-{번호}-{용도}-{굵기}` 형태입니다.
+
+| 부분 | 값 | 설명 |
+| --- | --- | --- |
+| 계층 | `display` `title` `heading` `body` `label` `caption` | 크기 계층 |
+| 용도 | `normal` `reading` | `reading`은 본문 읽기용 (없으면 기본) |
+| 굵기 | `semibold`(600) `regular`(400) `light`(300) | 폰트 굵기 |

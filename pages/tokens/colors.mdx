@@ -1,0 +1,48 @@
+import {
+  PaletteScales,
+  SemanticColors,
+  CategoryColors,
+  AlphaColors,
+  InteractionColors,
+} from '../../components/tokens/ColorPalette'
+
+# 색상
+
+모든 색상은 CSS 변수로 제공됩니다. 스와치를 클릭하면 `var(--이름)` 형태로 복사됩니다.
+
+```css
+.my-element {
+  color: var(--semantic-text-default);
+  background: var(--main-5);
+}
+```
+
+> 모든 색상 변수는 `--이름-rgb` 짝 변수(쉼표로 구분된 RGB 값)도 함께 제공되어
+> `rgba(var(--main-50-rgb), 0.5)` 형태로 투명도를 조절할 수 있습니다.
+
+## 시맨틱 색상
+
+용도가 정해진 색상입니다. **팔레트 원색보다 시맨틱 변수를 우선 사용하세요.**
+화살표(→)는 참조 중인 팔레트 변수를 나타냅니다.
+
+<SemanticColors />
+
+## 팔레트 스케일
+
+<PaletteScales />
+
+## 카테고리 색상
+
+차트·태그 등 항목 구분용 색상 14종입니다.
+
+<CategoryColors />
+
+## 인터랙션 색상
+
+hover/pressed/focused 등 상태 오버레이용 색상입니다.
+
+<InteractionColors />
+
+## 알파 & 기타
+
+<AlphaColors />
