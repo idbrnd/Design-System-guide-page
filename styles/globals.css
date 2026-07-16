@@ -1,0 +1,7 @@
+/* 가이드 페이지 전역 스타일 (Nextra 테마 위 보정용) */
+
+/* props 표가 좁은 화면에서 깨지지 않도록 가로 스크롤 허용 */
+.nextra-content table {
+  display: block;
+  overflow-x: auto;
+}

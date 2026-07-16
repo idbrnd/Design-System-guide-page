@@ -1,0 +1,18 @@
+# dependencies
+node_modules/
+
+# next.js
+.next/
+out/
+
+# 자동 생성 파일 (predev/prebuild에서 재생성됨)
+lib/tokens.generated.json
+next-env.d.ts
+
+# misc
+.DS_Store
+*.tsbuildinfo
+
+# local tooling
+.claude/
+.vscode/
