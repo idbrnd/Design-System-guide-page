@@ -1,0 +1,132 @@
+import Demo from '../../components/Demo'
+import {
+  TabBasicDemo,
+  TabBadgeDemo,
+  TabFillDemo,
+  TabTrailingIconDemo,
+  TabDisabledDemo,
+} from '../../components/demos/TabDemos'
+
+# Tab
+
+`value` + `onChange`를 받는 controlled 탭 컴포넌트입니다. WAI-ARIA `tablist` 패턴을 따르며 키보드(ArrowLeft/Right, Home, End)로 탐색할 수 있습니다. 탭이 뷰포트를 초과하면 드래그 가능한 캐러셀이 자동으로 활성화됩니다.
+
+## 기본 사용
+
+<Demo column>
+  <TabBasicDemo />
+</Demo>
+
+```tsx
+import { useState } from 'react'
+import { Tab } from '@idbrnd/design-system'
+import type { TabItem } from '@idbrnd/design-system'
+
+const items: TabItem[] = [
+  { value: 'all', label: '전체' },
+  { value: 'active', label: '진행 중' },
+  { value: 'done', label: '완료' },
+]
+
+function TabExample() {
+  const [tab, setTab] = useState<string | number>('all')
+
+  return <Tab items={items} value={tab} onChange={setTab} />
+}
+```
+
+## 뱃지 + 숫자 뱃지
+
+<Demo column>
+  <TabBadgeDemo />
+</Demo>
+
+```tsx
+const items: TabItem[] = [
+  { value: 'inbox', label: '받은 메시지' },
+  { value: 'unread', label: '안읽은 메시지', badge: true },
+  { value: 'sent', label: '보낸 메시지', numberBadge: 12 },
+]
+
+<Tab items={items} value={tab} onChange={setTab} />
+```
+
+## fill 모드 (균등 분배)
+
+<Demo column>
+  <TabFillDemo />
+</Demo>
+
+```tsx
+<Tab items={items} value={tab} onChange={setTab} resize="fill" />
+```
+
+## 왼쪽 패딩 + trailing 아이콘 버튼
+
+<Demo column>
+  <TabTrailingIconDemo />
+</Demo>
+
+```tsx
+import { BasicIconButton, PlusIcon, Tab } from '@idbrnd/design-system'
+
+<Tab
+  items={items}
+  value={tab}
+  onChange={setTab}
+  horizontalPadding
+  trailingIcon={
+    <BasicIconButton aria-label="탭 추가" onClick={handleAdd}>
+      <PlusIcon />
+    </BasicIconButton>
+  }
+/>
+```
+
+## 비활성화 탭 포함
+
+<Demo column>
+  <TabDisabledDemo />
+</Demo>
+
+```tsx
+const items: TabItem[] = [
+  { value: 'a', label: '사용 가능' },
+  { value: 'b', label: '비활성화', disabled: true },
+  { value: 'c', label: '사용 가능' },
+]
+
+<Tab items={items} value={tab} onChange={setTab} />
+```
+
+## Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `items` | `TabItem[]` | — | **(필수)** 탭 목록 |
+| `value` | `string \| number` | — | **(필수)** 현재 선택된 탭 값 |
+| `onChange` | `(value: string \| number) => void` | — | 탭 변경 콜백 |
+| `size` | `'large' \| 'medium' \| 'small'` | `'medium'` | 크기. 폰트 기준: large = heading-1, medium = heading-2, small = body-1 |
+| `resize` | `'hug' \| 'fill'` | `'hug'` | `hug`: 탭이 자연 폭, `fill`: 탭이 컨테이너를 균등 분배 |
+| `horizontalPadding` | `boolean` | `false` | `true` 시 왼쪽 20px 패딩 적용 |
+| `trailingIcon` | `ReactNode` | — | 탭 목록 오른쪽에 고정 노출되는 아이콘 슬롯. `resize="hug"`일 때만 적용 |
+| `label` | `string` | — | 스크린 리더용 그룹 레이블 (`aria-label`) |
+| `customStyle` | `CSSProperties` | — | 추가 인라인 스타일 |
+
+**`TabItem`**
+
+| 필드 | 타입 | 설명 |
+| --- | --- | --- |
+| `value` | `string \| number` | **(필수)** 탭 고유 값 |
+| `label` | `ReactNode` | **(필수)** 탭 레이블 |
+| `badge` | `boolean` | `true` 시 레이블 우측 상단에 빨간 점(dot) 뱃지 표시 |
+| `numberBadge` | `number` | 양수일 때 레이블 우측에 숫자 뱃지 표시. 999 초과 시 "999+"로 클리핑. `badge`보다 우선 |
+| `disabled` | `boolean` | 비활성화. 키보드 탐색에서도 건너뜀 |
+
+## 유의사항
+
+- 탭이 뷰포트를 초과하면 드래그 가능한 캐러셀이 자동으로 활성화되고, 선택된 탭으로 자동 스크롤됩니다.
+- `resize="fill"` 모드에서도 탭 개수가 많아 초과하면 캐러셀이 활성화됩니다.
+- `trailingIcon`은 `resize="hug"`일 때만 렌더링됩니다.
+- `value`에 해당하는 item이 없으면 슬라이딩 인디케이터가 숨겨지고, 첫 번째 활성 탭에 키보드 포커스가 유지됩니다.
+- `numberBadge={0}` 또는 음수이면 뱃지가 표시되지 않습니다.

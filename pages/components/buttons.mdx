@@ -1,3 +1,137 @@
+import { FillButton, OutlineButton, TextButton, WeakButton } from '@idbrnd/design-system'
+import Demo from '../../components/Demo'
+
 # 버튼
 
-준비 중입니다.
+텍스트 버튼 계열 4종입니다. 모든 버튼은 네이티브 `<button>` 속성(`onClick`, `disabled`, `type`, `aria-*` 등)을 그대로 사용할 수 있습니다.
+
+## 공통 Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `widthType` | `'flexible' \| 'fixed'` | `'flexible'` | `flexible`: 콘텐츠에 맞춤, `fixed`: 부모 너비를 꽉 채움 (문자열 자식은 말줄임 처리) |
+| `size` | `'large' \| 'medium' \| 'small' \| 'xsmall'` | `'medium'` | 버튼 크기 |
+| `loading` | `boolean` | `false` | 콘텐츠 대신 스피너 표시, 클릭 이벤트 차단 |
+| `disabled` | `boolean` | `false` | 비활성화 |
+| `keepFocusOnClick` | `boolean` | `false` | 클릭 후 포커스 유지 여부 |
+| `customStyle` | `CSSProperties` | — | 인라인 스타일 (`style` 대신 사용) |
+
+## FillButton
+
+배경이 채워진 주요 액션 버튼입니다.
+
+<Demo>
+  <FillButton variant="primary">저장</FillButton>
+  <FillButton variant="assistive">보조</FillButton>
+  <FillButton variant="error">삭제</FillButton>
+  <FillButton loading>저장 중</FillButton>
+  <FillButton disabled>비활성화</FillButton>
+</Demo>
+
+```tsx
+import { FillButton } from '@idbrnd/design-system'
+
+<FillButton variant="primary">저장</FillButton>
+<FillButton variant="assistive">보조</FillButton>
+<FillButton variant="error">삭제</FillButton>
+<FillButton loading>저장 중</FillButton>
+<FillButton disabled>비활성화</FillButton>
+```
+
+### 크기
+
+<Demo>
+  <FillButton size="large">large</FillButton>
+  <FillButton size="medium">medium</FillButton>
+  <FillButton size="small">small</FillButton>
+  <FillButton size="xsmall">xsmall</FillButton>
+</Demo>
+
+```tsx
+<FillButton size="large">large</FillButton>
+<FillButton size="medium">medium</FillButton>
+<FillButton size="small">small</FillButton>
+<FillButton size="xsmall">xsmall</FillButton>
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `variant` | `'primary' \| 'assistive' \| 'error'` | `'primary'` | 색상 변형 |
+
+나머지는 [공통 Props](#공통-props)와 동일합니다.
+
+## OutlineButton
+
+테두리 스타일 버튼입니다.
+
+<Demo>
+  <OutlineButton variant="primary">확인</OutlineButton>
+  <OutlineButton variant="secondary">취소</OutlineButton>
+  <OutlineButton variant="assistive">보조</OutlineButton>
+  <OutlineButton loading>처리 중</OutlineButton>
+</Demo>
+
+```tsx
+import { OutlineButton } from '@idbrnd/design-system'
+
+<OutlineButton variant="primary">확인</OutlineButton>
+<OutlineButton variant="secondary">취소</OutlineButton>
+<OutlineButton variant="assistive">보조</OutlineButton>
+<OutlineButton loading>처리 중</OutlineButton>
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `variant` | `'primary' \| 'assistive' \| 'secondary'` | `'assistive'` | 색상 변형 |
+
+## TextButton
+
+배경 없이 텍스트만 있는 버튼입니다.
+
+<Demo>
+  <TextButton variant="primary">텍스트 버튼</TextButton>
+  <TextButton variant="assistive">보조</TextButton>
+  <TextButton variant="secondary" size="small">작은 버튼</TextButton>
+</Demo>
+
+```tsx
+import { TextButton } from '@idbrnd/design-system'
+
+<TextButton variant="primary">텍스트 버튼</TextButton>
+<TextButton variant="assistive">보조</TextButton>
+<TextButton variant="secondary" size="small">작은 버튼</TextButton>
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `variant` | `'primary' \| 'assistive' \| 'secondary'` | `'assistive'` | 색상 변형 |
+
+## WeakButton
+
+옅은 배경의 보조 액션 버튼입니다.
+
+<Demo>
+  <WeakButton variant="primary">확인</WeakButton>
+  <WeakButton variant="assistive">보조</WeakButton>
+  <WeakButton variant="error" size="xsmall">삭제</WeakButton>
+</Demo>
+
+```tsx
+import { WeakButton } from '@idbrnd/design-system'
+
+<WeakButton variant="primary">확인</WeakButton>
+<WeakButton variant="assistive">보조</WeakButton>
+<WeakButton variant="error" size="xsmall">삭제</WeakButton>
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `variant` | `'primary' \| 'assistive' \| 'error'` | `'assistive'` | 색상 변형 |

@@ -1,0 +1,266 @@
+import { Chip, ChipGroup, SearchIcon, CloseSmallIcon } from '@idbrnd/design-system'
+import Demo from '../../components/Demo'
+import {
+  ChipToggleDemo,
+  ChipGroupSelectionDemo,
+  ChipGroupSuggestionDemo,
+  FilterChipDemo,
+  FilterBarDemo,
+} from '../../components/demos/ChipDemos'
+
+# 칩
+
+`Chip`, `ChipGroup`, `FilterChip`, `FilterBar` 4개의 컴포넌트로 구성됩니다.
+
+## Chip
+
+기본 칩 버튼 컴포넌트입니다. `style`, `type`, `onClick`을 제외한 네이티브 `<button>` 속성(`disabled`, `aria-*` 등)을 그대로 사용할 수 있으며, `onClick`은 별도 prop으로 지원됩니다.
+
+<Demo>
+  <Chip>텍스트</Chip>
+  <Chip variant="fill" selected>선택됨</Chip>
+  <Chip variant="fillWeak">fillWeak</Chip>
+  <Chip variant="outlineSurface">outlineSurface</Chip>
+  <Chip disabled>비활성화</Chip>
+  <Chip leadingSlot={<SearchIcon size={16} />} trailingSlot={<CloseSmallIcon size={16} />}>
+    검색어
+  </Chip>
+</Demo>
+
+```tsx
+import { Chip, SearchIcon, CloseSmallIcon } from '@idbrnd/design-system'
+
+// 기본
+<Chip>텍스트</Chip>
+
+// variant + selected
+<Chip variant="fill" selected>선택됨</Chip>
+
+// 비활성화
+<Chip disabled>비활성화</Chip>
+
+// 아이콘 포함
+<Chip leadingSlot={<SearchIcon size={16} />} trailingSlot={<CloseSmallIcon size={16} />}>
+  검색어
+</Chip>
+```
+
+### 선택 토글
+
+<Demo>
+  <ChipToggleDemo />
+</Demo>
+
+```tsx
+const [isSelected, setIsSelected] = useState(false)
+
+<Chip variant="outline" selected={isSelected} onClick={() => setIsSelected(p => !p)}>
+  토글
+</Chip>
+```
+
+### 크기
+
+<Demo>
+  <Chip size="large">large</Chip>
+  <Chip size="medium">medium</Chip>
+  <Chip size="small">small</Chip>
+  <Chip size="xsmall">xsmall</Chip>
+</Demo>
+
+```tsx
+<Chip size="large">large</Chip>
+<Chip size="medium">medium</Chip>
+<Chip size="small">small</Chip>
+<Chip size="xsmall">xsmall</Chip>
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `variant` | `'fillWeak' \| 'fill' \| 'outline' \| 'outlineSurface'` | `'outline'` | 칩 스타일 |
+| `size` | `'large' \| 'medium' \| 'small' \| 'xsmall'` | `'medium'` | 칩 크기 |
+| `selected` | `boolean` | `false` | 선택 상태 |
+| `disabled` | `boolean` | `false` | 비활성화 |
+| `leadingSlot` | `ReactNode` | — | 텍스트 왼쪽 콘텐츠 |
+| `trailingSlot` | `ReactNode` | — | 텍스트 오른쪽 콘텐츠 |
+| `onClick` | `MouseEventHandler<HTMLButtonElement>` | — | 클릭 핸들러 |
+| `customStyle` | `CSSProperties` | — | 루트 엘리먼트 인라인 스타일 (`style` 대신 사용) |
+
+## ChipGroup
+
+여러 `Chip`을 묶어서 표시하는 컨테이너입니다.
+
+### selection — 줄바꿈 다중 선택
+
+<Demo>
+  <ChipGroupSelectionDemo />
+</Demo>
+
+```tsx
+import { useState } from 'react'
+import { Chip, ChipGroup } from '@idbrnd/design-system'
+import type { DropdownOption } from '@idbrnd/design-system'
+
+const [selected, setSelected] = useState<DropdownOption[]>([])
+
+function toggle(prev: DropdownOption[], item: DropdownOption) {
+  return prev.some(o => o.value === item.value)
+    ? prev.filter(o => o.value !== item.value)
+    : [...prev, item]
+}
+
+<ChipGroup type="selection" leadingSlot={<span>카테고리</span>}>
+  {categories.map(({ label, value }) => (
+    <Chip
+      key={value}
+      variant="outline"
+      selected={selected.some(o => o.value === value)}
+      onClick={() => setSelected(prev => toggle(prev, { label, value }))}
+    >
+      {label}
+    </Chip>
+  ))}
+</ChipGroup>
+```
+
+### suggestion — 가로 드래그 캐러셀
+
+컨테이너 너비를 넘어가면 가로로 드래그해서 스크롤할 수 있습니다. `gradient`를 켜면 스크롤 여부에 따라 양끝에 그라데이션 오버레이가 표시됩니다.
+
+<Demo>
+  <ChipGroupSuggestionDemo />
+</Demo>
+
+```tsx
+<ChipGroup type="suggestion" gradient>
+  {suggestions.map(({ label, value }) => (
+    <Chip key={value} variant="fillWeak">{label}</Chip>
+  ))}
+</ChipGroup>
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `type` | `'selection' \| 'suggestion'` | `'selection'` | 칩 목록의 overflow 처리 방식. `selection`: 줄바꿈, `suggestion`: 가로 드래그 캐러셀 |
+| `size` | `'large' \| 'medium' \| 'small' \| 'xsmall'` | `'medium'` | 그룹 내 칩 간격 및 칩 크기 |
+| `gradient` | `boolean` | `false` | `suggestion` 타입에서 스크롤 여부에 따라 양끝에 그라데이션 오버레이 표시 |
+| `leadingSlot` | `ReactNode` | — | 칩 목록 앞에 표시할 텍스트/라벨 콘텐츠 |
+| `leadingElementSlot` | `ReactNode` | — | 칩 목록 앞에 구분선과 함께 표시할 엘리먼트 (아이콘, 아바타 등) |
+| `customStyle` | `CSSProperties` | — | 루트 엘리먼트 인라인 스타일 |
+
+## FilterChip
+
+드롭다운 옵션 선택 기능이 내장된 칩입니다. `trailingSlot`을 제외한 `Chip`의 모든 props를 지원합니다.
+
+<Demo>
+  <FilterChipDemo />
+</Demo>
+
+```tsx
+import { useState } from 'react'
+import { FilterChip } from '@idbrnd/design-system'
+import type { DropdownOption } from '@idbrnd/design-system'
+
+const [sort, setSort] = useState<DropdownOption | undefined>()
+
+// 기본
+<FilterChip
+  variant="outline"
+  options={sortOptions}
+  selectedValue={sort?.value}
+  onSelect={setSort}
+>
+  {sort?.label ?? '정렬'}
+</FilterChip>
+
+// showSelectedLabel — "소속 4공장 C조" 형태로 표시, 재클릭 시 선택 해제
+<FilterChip
+  variant="outline"
+  options={teamOptions}
+  selectedValue={team?.value}
+  onSelect={setTeam}
+  showSelectedLabel
+>
+  소속
+</FilterChip>
+
+// 검색형 드롭다운 + 너비 고정
+<FilterChip
+  variant="outline"
+  options={brandOptions}
+  selectedValue={brand?.value}
+  onSelect={setBrand}
+  dropdownType="search"
+  dropdownWidth={280}
+>
+  {brand?.label ?? '브랜드'}
+</FilterChip>
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `options` | `DropdownOption[]` | (필수) | 드롭다운에 표시할 옵션 목록 |
+| `onSelect` | `(option: DropdownOption \| undefined) => void` | (필수) | 선택/해제 콜백. 이미 선택된 옵션 재클릭 시 `undefined` 전달 (선택 해제) |
+| `selectedValue` | `string` | — | 현재 선택된 옵션의 `value` |
+| `dropdownType` | `'basic' \| 'search'` | `'basic'` | `search`: 검색 입력란 포함 |
+| `dropdownAlign` | `'left' \| 'center'` | `'left'` | 옵션 정렬 방향 |
+| `dropdownWidth` | `number` | — | 드롭다운 목록 너비 (px) |
+| `showSelectedLabel` | `boolean` | `false` | `true`면 선택된 옵션의 label을 `children` 옆에 함께 표시 (예: "소속 4공장 C조") |
+
+**`DropdownOption`**
+
+| 필드 | 타입 | 설명 |
+| --- | --- | --- |
+| `label` | `string` | **(필수)** 옵션에 표시되는 텍스트 |
+| `value` | `string` | **(필수)** 옵션의 고유 식별 값 |
+| `icon` | `ReactNode` | 옵션 라벨 좌측에 표시할 아이콘 |
+| `disabled` | `boolean` | 비활성화 여부 |
+
+## FilterBar
+
+`FilterChip`들을 가로 드래그 캐러셀로 배치하는 컨테이너입니다.
+
+<Demo>
+  <FilterBarDemo />
+</Demo>
+
+```tsx
+import { FilterBar, FilterChip, FilterIcon, TextButton } from '@idbrnd/design-system'
+
+<FilterBar
+  leadingElementSlot={<FilterIcon size={24} />}
+  trailingElementSlot={
+    <TextButton size="small" onClick={handleReset}>초기화</TextButton>
+  }
+>
+  <FilterChip options={sortOptions} selectedValue={sort?.value} onSelect={setSort} showSelectedLabel>
+    정렬
+  </FilterChip>
+  <FilterChip options={teamOptions} selectedValue={team?.value} onSelect={setTeam} showSelectedLabel>
+    소속
+  </FilterChip>
+</FilterBar>
+
+// verticalPadding — 위아래 8px 패딩, 그라데이션 없음
+<FilterBar verticalPadding>
+  <FilterChip options={sortOptions} selectedValue={sort?.value} onSelect={setSort}>
+    정렬
+  </FilterChip>
+</FilterBar>
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `size` | `'large' \| 'medium' \| 'small' \| 'xsmall'` | `'medium'` | 칩 간격 크기 |
+| `verticalPadding` | `boolean` | `false` | `true`: 위아래 8px 패딩, 그라데이션 없음. `false`: 그라데이션 사용, 패딩 없음 |
+| `leadingElementSlot` | `ReactNode` | — | 필터 칩 목록 앞에 구분선과 함께 표시할 엘리먼트 (아이콘, 아바타 등) |
+| `trailingElementSlot` | `ReactNode` | — | 필터 칩 목록 뒤에 표시할 엘리먼트 (초기화 버튼 등) |
+| `customStyle` | `CSSProperties` | — | 루트 엘리먼트 인라인 스타일 |

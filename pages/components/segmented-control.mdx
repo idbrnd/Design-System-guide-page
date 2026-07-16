@@ -1,0 +1,145 @@
+import Demo from '../../components/Demo'
+import {
+  SegmentedControlBasicDemo,
+  SegmentedControlOutlinedDemo,
+  SegmentedControlIconTextDemo,
+  SegmentedControlIconOnlyDemo,
+  SegmentedControlLayoutDemo,
+} from '../../components/demos/SegmentedControlDemos'
+
+# SegmentedControl
+
+탭 형태로 옵션을 전환하는 컴포넌트입니다. WAI-ARIA `tablist` 패턴을 따르며 키보드(Arrow, Home, End)로 탐색할 수 있습니다.
+
+## 기본 사용
+
+<Demo>
+  <SegmentedControlBasicDemo />
+</Demo>
+
+```tsx
+import { useState } from 'react'
+import { SegmentedControl } from '@idbrnd/design-system'
+import type { SegmentedControlItem } from '@idbrnd/design-system'
+
+const items: SegmentedControlItem[] = [
+  { value: 'day', label: '일' },
+  { value: 'week', label: '주' },
+  { value: 'month', label: '월' },
+]
+
+function Example() {
+  const [period, setPeriod] = useState('day')
+
+  return <SegmentedControl items={items} value={period} onChange={setPeriod} />
+}
+```
+
+## outlined 타입 + large 크기
+
+<Demo>
+  <SegmentedControlOutlinedDemo />
+</Demo>
+
+```tsx
+<SegmentedControl
+  type="outlined"
+  size="large"
+  items={items}
+  value={period}
+  onChange={setPeriod}
+/>
+```
+
+## 아이콘 + 텍스트 (`icon=true`)
+
+`variant="basic"`에서 `icon`을 켜면 세그먼트 왼쪽에 아이콘, 나머지 공간에 텍스트가 배치됩니다.
+
+<Demo>
+  <SegmentedControlIconTextDemo />
+</Demo>
+
+```tsx
+import { MenuIcon, BarchartIcon, MapPinnedIcon } from '@idbrnd/design-system'
+
+<SegmentedControl
+  icon
+  items={[
+    { value: 'list', label: '목록', icon: <MenuIcon /> },
+    { value: 'chart', label: '차트', icon: <BarchartIcon /> },
+    { value: 'map', label: '지도', icon: <MapPinnedIcon /> },
+  ]}
+  value={view}
+  onChange={setView}
+/>
+```
+
+## 아이콘 전용 (`variant="icon"`)
+
+정사각형 세그먼트에 아이콘만 표시합니다. 각 item에 스크린 리더용 `ariaLabel`을 반드시 지정해야 합니다.
+
+<Demo>
+  <SegmentedControlIconOnlyDemo />
+</Demo>
+
+```tsx
+<SegmentedControl
+  variant="icon"
+  label="뷰 전환"
+  items={[
+    { value: 'list', icon: <MenuIcon />, ariaLabel: '목록 보기' },
+    { value: 'chart', icon: <BarchartIcon />, ariaLabel: '차트 보기' },
+    { value: 'map', icon: <MapPinnedIcon />, ariaLabel: '지도 보기' },
+  ]}
+  value={view}
+  onChange={setView}
+/>
+```
+
+## 레이아웃 (`layout="hug" | "fill"`)
+
+<Demo column>
+  <SegmentedControlLayoutDemo />
+</Demo>
+
+```tsx
+// hug: 내부 세그먼트 크기에 맞춰 컨테이너가 축소됩니다
+<SegmentedControl items={items} value={period} onChange={setPeriod} layout="hug" />
+
+// fill: 부모 너비를 최대한 채우고 세그먼트가 균등하게 늘어납니다 (basic 기본값)
+<SegmentedControl items={items} value={period} onChange={setPeriod} layout="fill" />
+```
+
+## Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `items` | `SegmentedControlItem[]` | — | **(필수)** 세그먼트 목록 |
+| `value` | `string` | — | **(필수)** 현재 선택된 세그먼트 값 |
+| `onChange` | `(value: string) => void` | — | 세그먼트 변경 콜백 |
+| `variant` | `'basic' \| 'icon'` | `'basic'` | `'icon'`: 아이콘 전용 정사각형 세그먼트 |
+| `type` | `'fill' \| 'outlined'` | `'fill'` | 컴포넌트 외형 |
+| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | 크기. small: 32px, medium: 40px, large: 48px |
+| `layout` | `'hug' \| 'fill'` | variant별 상이 | 컨테이너 크기 결정 방식. `'hug'`: 내부 세그먼트 크기에 맞춰 축소, `'fill'`: 부모 너비를 최대한 채움. 기본값은 `variant="basic"`이면 `'fill'`, `variant="icon"`이면 `'hug'` |
+| `icon` | `boolean` | `false` | `variant="basic"`에서 아이콘을 텍스트와 함께 표시 |
+| `label` | `string` | — | 스크린 리더용 그룹 레이블 (`aria-label`) |
+| `customStyle` | `CSSProperties` | — | 추가 인라인 스타일 |
+
+**`SegmentedControlItem`**
+
+| 필드 | 타입 | 설명 |
+| --- | --- | --- |
+| `value` | `string` | **(필수)** 세그먼트 고유 값 |
+| `label` | `ReactNode` | 텍스트 라벨 (`variant="basic"`에서 사용) |
+| `icon` | `ReactNode` | 아이콘 (`icon=true` 또는 `variant="icon"`) |
+| `disabled` | `boolean` | 비활성화 |
+| `ariaLabel` | `string` | `variant="icon"`일 때 스크린 리더용 버튼 레이블 |
+
+## 유의사항
+
+- `layout`을 지정하지 않으면 `variant`별 기본값(`basic`은 `"fill"`, `icon`은 `"hug"`)이 적용됩니다.
+- `variant="icon"` 사용 시 각 item에 `ariaLabel`을 반드시 지정해야 합니다. 미지정 시 개발 모드에서 경고가 출력됩니다.
+- `variant="basic"`에서 `icon=true`이면 세그먼트 왼쪽에 아이콘, 나머지 공간에 텍스트가 배치됩니다.
+- `value`에 해당하는 item이 없으면 슬라이딩 인디케이터가 숨겨지고, 첫 번째 활성 항목에 키보드 포커스가 유지됩니다.
+- 키보드 ArrowLeft/Right(또는 Up/Down)로 세그먼트 이동, Home/End로 첫/끝 이동을 지원합니다.
+- 비활성화된 세그먼트는 키보드 이동에서 건너뜁니다.

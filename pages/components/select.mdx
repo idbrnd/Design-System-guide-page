@@ -1,0 +1,148 @@
+import Demo from '../../components/Demo'
+import {
+  BasicSelectDemo,
+  SearchSelectDemo,
+  ErrorSelectDemo,
+  DisabledOptionSelectDemo,
+} from '../../components/demos/SelectDemo'
+
+# Select
+
+라벨, 트리거 버튼, 드롭다운 목록을 포함하는 완성형 셀렉트 컴포넌트입니다.
+트리거 클릭 시 포탈 기반 드롭다운이 열리며, 외부 클릭·Escape·스크롤/리사이즈를 자동으로 처리합니다.
+
+<Demo>
+  <BasicSelectDemo />
+</Demo>
+
+```tsx
+import { useState } from 'react'
+import { Select } from '@idbrnd/design-system'
+import type { DropdownOption } from '@idbrnd/design-system'
+
+const options: DropdownOption[] = [
+  { label: '사과', value: 'apple' },
+  { label: '바나나', value: 'banana' },
+  { label: '포도', value: 'grape' },
+]
+
+function SelectExample() {
+  const [selected, setSelected] = useState<DropdownOption | null>(null)
+
+  return (
+    <Select
+      heading="과일 선택"
+      placeholder="선택해주세요."
+      options={options}
+      selectedValue={selected}
+      onSelect={setSelected}
+    />
+  )
+}
+```
+
+## 검색 기능 + 아이콘 표시
+
+`type="search"`를 지정하면 드롭다운 상단에 검색 입력란이 표시되고, 입력 시 옵션이 실시간 필터링됩니다.
+`content`를 `true`로 지정하면 옵션의 `icon`이 라벨 좌측에 표시됩니다.
+
+<Demo>
+  <SearchSelectDemo />
+</Demo>
+
+```tsx
+const options: DropdownOption[] = [
+  { label: '프로필', value: 'profile', icon: <PersonIcon size={16} /> },
+  { label: '알림', value: 'notification', icon: <BellIcon size={16} /> },
+  { label: '설정', value: 'setting', icon: <SettingIcon size={16} /> },
+]
+
+<Select
+  heading="검색 가능한 셀렉트"
+  required
+  type="search"
+  content
+  options={options}
+  selectedValue={selected}
+  onSelect={setSelected}
+/>
+```
+
+## 에러 상태
+
+`variant="error"`는 자동 전환되지 않으므로 직접 지정해야 합니다.
+
+<Demo>
+  <ErrorSelectDemo />
+</Demo>
+
+```tsx
+<Select
+  heading="필수 항목"
+  variant="error"
+  description="항목을 선택해주세요."
+  options={options}
+  selectedValue={selected}
+  onSelect={setSelected}
+/>
+```
+
+## 특정 옵션 비활성화
+
+옵션에 `disabled: true`를 지정하면 해당 옵션이 클릭 불가 상태로 표시됩니다.
+
+<Demo>
+  <DisabledOptionSelectDemo />
+</Demo>
+
+```tsx
+const options: DropdownOption[] = [
+  { label: '사용 가능', value: 'a' },
+  { label: '선택 불가', value: 'b', disabled: true },
+  { label: '사용 가능', value: 'c' },
+]
+
+<Select options={options} selectedValue={selected} onSelect={setSelected} />
+```
+
+## Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `options` | `DropdownOption[]` | `[]` | 드롭다운에 표시할 옵션 배열. `{ label, value, icon?, disabled? }` 형태 |
+| `selectedValue` | `DropdownOption \| null` | — | 현재 선택된 옵션 |
+| `onSelect` | `(option: DropdownOption) => void` | — | 옵션 선택 시 호출되는 콜백 |
+| `variant` | `'default' \| 'choosing' \| 'error' \| 'selected'` | `'default'` | 트리거 상태. `choosing`/`selected`는 자동 적용 |
+| `size` | `'large' \| 'medium' \| 'small'` | `'medium'` | 트리거 높이. large: 44px, medium: 40px, small: 36px |
+| `heading` | `string` | — | 상단 라벨 텍스트. 미지정 시 라벨 미표시 |
+| `required` | `boolean` | `false` | 라벨 우측 `*` 표시 여부 |
+| `leadingContent` | `ReactNode` | — | 트리거 텍스트 좌측에 표시할 아이콘 등 |
+| `description` | `ReactNode` | — | 하단 안내 문구 |
+| `placeholder` | `ReactNode` | `'선택해주세요.'` | 미선택 시 표시할 콘텐츠. 문자열 또는 JSX 전달 가능 |
+| `disabled` | `boolean` | `false` | 비활성화 |
+| `type` | `'basic' \| 'search'` | `'basic'` | `'search'` 시 드롭다운 상단에 검색 입력란 표시, 실시간 필터링 |
+| `align` | `'left' \| 'center'` | `'left'` | 옵션 텍스트 정렬 |
+| `content` | `boolean` | `false` | `true` 시 옵션의 `icon`이 라벨 좌측에 표시 |
+| `buttonWidth` | `number` | — | 트리거 버튼 너비(px). 미지정 시 부모 너비를 따름 |
+| `descriptionWidth` | `number` | — | 하단 안내 문구 너비(px). 미지정 시 부모 너비를 따름 |
+| `textColor` | `string` | — | 옵션 라벨 텍스트 색상 커스터마이징 (예: `'#6366f1'`) |
+| `customStyle` | `CSSProperties` | — | 루트 엘리먼트 인라인 스타일 (`style` 대신 사용) |
+
+### DropdownOption
+
+| 필드 | 타입 | 설명 |
+| --- | --- | --- |
+| `label` | `string` | **(필수)** 옵션에 표시되는 텍스트 |
+| `value` | `string` | **(필수)** 옵션의 고유 식별 값 |
+| `icon` | `ReactNode` | 옵션 라벨 좌측 아이콘. `content={true}`일 때만 렌더링됩니다 |
+| `disabled` | `boolean` | `true`이면 클릭이 차단되고 비활성 스타일이 적용됩니다 |
+
+## 유의사항
+
+- `variant`를 직접 지정하지 않아도 열림/선택 상태에 따라 `choosing` → `selected`로 자동 전환됩니다.
+- `variant="error"`는 자동 전환되지 않으므로 직접 지정해야 합니다.
+- 드롭다운 목록은 `document.body`에 포탈로 렌더링됩니다.
+- 뷰포트 하단 공간이 부족하면 드롭다운이 트리거 위쪽으로 자동 전환(flip)됩니다.
+- 긴 옵션 라벨은 말줄임 처리되며, hover 시 툴팁으로 전체 텍스트가 표시됩니다. 트리거 버튼의 선택된 값도 동일하게 동작합니다.
+- `placeholder`에 문자열 대신 JSX를 전달하면 커스텀 플레이스홀더를 렌더링할 수 있습니다.
+- 옵션이 비어있을 때: `type="search"`에서 검색어가 있으면 "검색 결과가 없습니다.", 그 외에는 `-`가 표시됩니다.

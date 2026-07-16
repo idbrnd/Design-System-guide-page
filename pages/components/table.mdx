@@ -1,0 +1,401 @@
+import Demo from '../../components/Demo'
+import {
+  TableSortingDemo,
+  TableSelectableDemo,
+  TableAccordionDemo,
+  TableLoadingDemo,
+  TableEmptyDemo,
+  PaginationBasicDemo,
+  PaginationCompactDemo,
+  PaginationMinimizeDemo,
+  PaginationToastDemo,
+  TableWithPaginationDemo,
+} from '../../components/demos/TableDemos'
+
+# 테이블
+
+`TableContainer`, `Table`, `Pagination` 3개의 컴포넌트로 구성됩니다. 내부적으로 [TanStack Table v8](https://tanstack.com/table/v8)을 사용하므로 `@tanstack/react-table` 패키지가 필요합니다.
+
+```bash
+npm install @tanstack/react-table
+```
+
+## TableContainer
+
+`Table`과 `Pagination`을 감싸는 레이아웃 컨테이너입니다. `variant`를 `Table`과 동일하게 맞춰야 합니다.
+
+```tsx
+import { TableContainer, Table, Pagination } from '@idbrnd/design-system'
+
+// normal: 외곽선 + border-radius (단독 사용, Pagination도 border 안에 포함)
+<TableContainer variant="normal">
+  <Table table={table} variant="normal" />
+  <Pagination {...paginationProps} />
+</TableContainer>
+
+// content: 외곽선 없음 (다른 컴포넌트 내부에 삽입할 때)
+<TableContainer variant="content">
+  <Table table={table} variant="content" />
+</TableContainer>
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `variant` | `'normal' \| 'content'` | `'normal'` | `Table` variant와 동일하게 설정. `normal`: 외곽선 + border-radius, `content`: 외곽선 없음 |
+| `children` | `ReactNode` | (필수) | `Table`, `Pagination` 등 |
+| `customStyle` | `CSSProperties` | — | 추가 인라인 스타일 |
+| `className` | `string` | — | 추가 클래스명 |
+
+## Table
+
+`useReactTable()`로 생성한 TanStack Table 인스턴스를 받아 렌더링하는 컴포넌트입니다.
+
+### 기본 + 정렬
+
+`getSortedRowModel`을 설정하면 헤더 클릭으로 정렬을 토글할 수 있습니다.
+
+<Demo column>
+  <TableSortingDemo />
+</Demo>
+
+```tsx
+import { useState } from 'react'
+import { Table, TableContainer } from '@idbrnd/design-system'
+import {
+  useReactTable,
+  getCoreRowModel,
+  getSortedRowModel,
+  type ColumnDef,
+  type SortingState,
+} from '@tanstack/react-table'
+
+interface Employee {
+  id: number
+  name: string
+  team: string
+  role: string
+  years: number
+}
+
+const columns: ColumnDef<Employee>[] = [
+  { accessorKey: 'name', header: '이름' },
+  { accessorKey: 'team', header: '소속' },
+  { accessorKey: 'role', header: '직급' },
+  { accessorKey: 'years', header: '근속연수' },
+]
+
+const [sorting, setSorting] = useState<SortingState>([])
+
+const table = useReactTable({
+  data,
+  columns,
+  state: { sorting },
+  onSortingChange: setSorting,
+  getCoreRowModel: getCoreRowModel(),
+  getSortedRowModel: getSortedRowModel(),
+})
+
+<TableContainer variant="normal">
+  <Table table={table} variant="normal" />
+</TableContainer>
+```
+
+### 행 선택 (체크박스)
+
+<Demo column>
+  <TableSelectableDemo />
+</Demo>
+
+```tsx
+import { type RowSelectionState } from '@tanstack/react-table'
+
+const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
+
+const table = useReactTable({
+  data,
+  columns,
+  enableRowSelection: true,
+  state: { rowSelection },
+  onRowSelectionChange: setRowSelection,
+  getCoreRowModel: getCoreRowModel(),
+})
+
+<Table table={table} selectable />
+```
+
+**단일 행 선택**은 `enableMultiRowSelection: false`와 `onRowSelectionChange` 오버라이드로 구현합니다.
+
+```tsx
+const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
+
+const table = useReactTable({
+  data,
+  columns,
+  enableRowSelection: true,
+  enableMultiRowSelection: false,
+  state: { rowSelection },
+  onRowSelectionChange: (updater) => {
+    const next = typeof updater === 'function' ? updater(rowSelection) : updater
+    const newlySelected = Object.keys(next).find((id) => !rowSelection[id])
+    setRowSelection(newlySelected ? { [newlySelected]: true } : {})
+  },
+  getCoreRowModel: getCoreRowModel(),
+})
+```
+
+### 행 클릭
+
+체크박스 없이 행 자체에 인터랙션을 적용하려면 `onRowClick`을 사용합니다.
+
+```tsx
+<Table table={table} onRowClick={(row) => console.log(row.original)} />
+```
+
+### 아코디언 (행 펼치기)
+
+쉐브론 버튼 클릭 시 행 하단에 콘텐츠를 슬라이드 애니메이션으로 펼칩니다. `accordion`을 켜면 `renderAccordionContent`를 반드시 함께 제공해야 합니다. 아래 데모는 근속 5년 이상인 행에만 쉐브론을 표시합니다.
+
+<Demo column>
+  <TableAccordionDemo />
+</Demo>
+
+```tsx
+const table = useReactTable({
+  data,
+  columns,
+  getCoreRowModel: getCoreRowModel(),
+  getRowId: (row) => String(row.id), // 정렬·필터 사용 시 필수
+})
+
+<Table
+  table={table}
+  accordion
+  canExpand={(row) => row.original.years >= 5} // 쉐브론 표시 여부를 가볍게 판단
+  renderAccordionContent={(row) => <DetailPanel data={row.original} />} // 펼쳐질 때만 렌더
+/>
+```
+
+- `canExpand`로 쉐브론 표시 여부를 결정하고, `renderAccordionContent`는 행이 최초로 펼쳐질 때 한 번만 호출됩니다. 이후 닫혀도 DOM에 유지되어 재렌더 없이 부드럽게 닫힙니다.
+- 쉐브론 버튼은 키보드 Tab+Enter 동작과 `aria-expanded` / `aria-controls`를 지원합니다.
+- TanStack Table은 기본적으로 배열 인덱스를 `row.id`로 사용하므로, 정렬·필터와 함께 쓸 때는 반드시 `getRowId`를 설정해야 엉뚱한 행이 열리는 문제를 막을 수 있습니다.
+
+**중첩 테이블 패턴** — 아코디언 콘텐츠로 `variant="content"` 테이블을 삽입할 수 있습니다.
+
+```tsx
+<Table
+  table={parentTable}
+  accordion
+  canExpand={(row) => row.original.orderCount > 0}
+  renderAccordionContent={(row) => <OrderTable userId={row.original.id} />}
+/>
+
+function OrderTable({ userId }: { userId: number }) {
+  const table = useReactTable({
+    data: getOrders(userId),
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  })
+  return (
+    <TableContainer variant="content">
+      <Table table={table} variant="content" maxRows={6} />
+    </TableContainer>
+  )
+}
+```
+
+### 로딩 스켈레톤
+
+<Demo column>
+  <TableLoadingDemo />
+</Demo>
+
+```tsx
+<Table table={table} loading skeletonRowCount={4} />
+```
+
+### 빈 상태
+
+<Demo column>
+  <TableEmptyDemo />
+</Demo>
+
+```tsx
+<Table
+  table={table}
+  emptyTitle="데이터가 없습니다"
+  emptyDescription="새 항목을 추가해 주세요"
+/>
+```
+
+### 최대 행 수 제한
+
+초과 시 tbody에 세로 스크롤이 생기고 헤더는 항상 고정됩니다.
+
+```tsx
+<Table table={table} maxRows={10} />
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `table` | `Table<TData>` | (필수) | `useReactTable()`로 생성한 TanStack Table 인스턴스 |
+| `variant` | `'normal' \| 'content'` | `'normal'` | `normal`: 외곽선 있음 (헤더 44px, body row 56px), `content`: 외곽선 없음 |
+| `selectable` | `boolean` | `false` | 첫 번째 컬럼에 행 선택 체크박스 표시. `enableRowSelection`, `state.rowSelection`, `onRowSelectionChange` 설정 필요 |
+| `interactive` | `boolean` | `false` | 행 hover/focus/pressed/selected 인터랙션 활성화 |
+| `onRowClick` | `(row: Row<TData>) => void` | — | 행 클릭 콜백. 제공 시 체크박스 없이도 행에 인터랙션 효과 적용 |
+| `loading` | `boolean` | `false` | 로딩 스켈레톤 표시 |
+| `skeletonRowCount` | `number` | `5` | 로딩 스켈레톤 행 수 |
+| `emptyContent` | `ReactNode` | — | 데이터 없을 때 표시할 커스텀 콘텐츠 (전체 오버라이드) |
+| `emptyTitle` | `string` | — | 빈 상태 제목 |
+| `emptyDescription` | `string` | — | 빈 상태 설명 |
+| `maxRows` | `number` | — | 표시할 최대 행 수. 초과 시 세로 스크롤, 헤더는 항상 고정 |
+| `accordion` | `boolean` | `false` | 아코디언 토글(쉐브론) 컬럼 활성화. `true`일 때 `renderAccordionContent`를 반드시 함께 제공해야 합니다 |
+| `canExpand` | `(row: Row<TData>) => boolean` | — | 쉐브론을 표시할 행 결정. 미제공 시 모든 행에 쉐브론 표시. `accordion=true`일 때만 사용 가능 |
+| `renderAccordionContent` | `(row: Row<TData>) => ReactNode` | — | 펼쳐진 행의 콘텐츠. 최초 열릴 때 1회 호출 후 DOM에 유지. `accordion=true`일 때 필수 |
+| `customStyle` | `CSSProperties` | — | 루트 엘리먼트 인라인 스타일 |
+| `className` | `string` | — | 추가 클래스명 |
+
+## Pagination
+
+`@tanstack/react-table` 없이 독립적으로 사용할 수 있는 페이지네이션 컴포넌트입니다.
+
+### 독립 사용 (TanStack Table 불필요)
+
+<Demo column>
+  <PaginationBasicDemo />
+</Demo>
+
+```tsx
+import { useState } from 'react'
+import { Pagination } from '@idbrnd/design-system'
+
+function Example() {
+  const [pageIndex, setPageIndex] = useState(0)
+  const pageCount = 20
+
+  return (
+    <Pagination
+      pageIndex={pageIndex}
+      pageCount={pageCount}
+      onPageChange={setPageIndex}
+      canPreviousPage={pageIndex > 0}
+      canNextPage={pageIndex < pageCount - 1}
+      onPreviousPage={() => setPageIndex((p) => p - 1)}
+      onNextPage={() => setPageIndex((p) => p + 1)}
+    />
+  )
+}
+```
+
+### variant / boundary / trailingContent
+
+<Demo column>
+  <PaginationCompactDemo />
+  <PaginationMinimizeDemo />
+</Demo>
+
+```tsx
+// compact + 첫/끝 고정 + 페이지 이동 입력란
+<Pagination
+  {...commonProps}
+  variant="compact"
+  boundary
+  trailingContent
+/>
+
+// minimize + 페이지 이동 입력란을 맨 우측에 고정
+<Pagination
+  {...commonProps}
+  variant="minimize"
+  trailingContent
+  isTrailingContentEnd
+/>
+```
+
+### 범위 벗어난 페이지 이동 차단 (outOfRangeToastText)
+
+`trailingContent`와 함께 `outOfRangeToastText`를 지정하면, 유효 범위(1 ~ pageCount)를 벗어난 값을 입력했을 때 페이지 이동을 막고 Toast 메시지를 표시합니다. 생략하면 기존 동작(유효 범위로 자동 클램핑)을 유지합니다.
+
+<Demo column>
+  <PaginationToastDemo />
+</Demo>
+
+```tsx
+<Pagination
+  {...commonProps}
+  trailingContent
+  outOfRangeToastText="유효하지 않은 페이지 번호입니다."
+/>
+```
+
+### TanStack Table과 함께 사용
+
+<Demo column>
+  <TableWithPaginationDemo />
+</Demo>
+
+```tsx
+import { Pagination, Table, TableContainer } from '@idbrnd/design-system'
+import {
+  useReactTable,
+  getCoreRowModel,
+  getPaginationRowModel,
+  type PaginationState,
+} from '@tanstack/react-table'
+
+const [pagination, setPagination] = useState<PaginationState>({
+  pageIndex: 0,
+  pageSize: 5,
+})
+
+const table = useReactTable({
+  data,
+  columns,
+  state: { pagination },
+  onPaginationChange: setPagination,
+  getCoreRowModel: getCoreRowModel(),
+  getPaginationRowModel: getPaginationRowModel(),
+})
+
+<TableContainer variant="normal">
+  <Table table={table} />
+  <Pagination
+    pageIndex={table.getState().pagination.pageIndex}
+    pageCount={table.getPageCount()}
+    onPageChange={(idx) => table.setPageIndex(idx)}
+    canPreviousPage={table.getCanPreviousPage()}
+    canNextPage={table.getCanNextPage()}
+    onPreviousPage={() => table.previousPage()}
+    onNextPage={() => table.nextPage()}
+    variant="extended"
+    boundary
+  />
+</TableContainer>
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `pageIndex` | `number` | (필수) | 현재 페이지 인덱스 (0-based) |
+| `pageCount` | `number` | (필수) | 전체 페이지 수 |
+| `onPageChange` | `(pageIndex: number) => void` | (필수) | 페이지 번호 클릭 시 호출. 0-based 인덱스 전달 |
+| `canPreviousPage` | `boolean` | (필수) | 이전 버튼 활성화 여부 |
+| `canNextPage` | `boolean` | (필수) | 다음 버튼 활성화 여부 |
+| `onPreviousPage` | `() => void` | (필수) | 이전 버튼 클릭 콜백 |
+| `onNextPage` | `() => void` | (필수) | 다음 버튼 클릭 콜백 |
+| `variant` | `'extended' \| 'compact' \| 'minimize'` | `'extended'` | `extended`: 최대 10개, `compact`: 최대 7개 페이지 번호 노출, `minimize`: 현재/전체 텍스트만 노출 |
+| `boundary` | `boolean` | `true` | `false`: 현재 페이지 중심의 슬라이딩 윈도우, `true`: 첫·끝 페이지 고정 + 중간을 `...`으로 축약 |
+| `trailingContent` | `boolean` | `false` | 우측에 "페이지 이동" 입력란 표시 |
+| `trailingContentGap` | `number \| string` | `40` | 버튼 그룹과 입력란 사이 간격. 숫자는 px로 자동 변환 |
+| `isTrailingContentEnd` | `boolean` | `false` | `true`이면 입력란을 컨테이너 맨 우측에 고정 |
+| `prevLabel` | `string` | `'이전'` | 이전 버튼 레이블 |
+| `nextLabel` | `string` | `'다음'` | 다음 버튼 레이블 |
+| `jumpLabel` | `string` | `'페이지 이동'` | 페이지 이동 입력란 레이블 |
+| `outOfRangeToastText` | `string` | — | `trailingContent`가 `true`일 때, 범위를 벗어난 페이지 번호 입력 시 표시할 Toast 메시지. 지정하지 않으면 유효 범위로 클램핑 |
+| `loading` | `boolean` | `false` | 로딩 스켈레톤 표시 |
+| `customStyle` | `CSSProperties` | — | 루트 엘리먼트 인라인 스타일 |
+| `className` | `string` | — | 추가 클래스명 |

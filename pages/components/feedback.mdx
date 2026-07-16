@@ -1,0 +1,341 @@
+import {
+  BasicIconButton,
+  BellIcon,
+  Clip,
+  CustomSpinner,
+  FadeSpinner,
+  PushBadge,
+  Spinner,
+  Tooltip,
+} from '@idbrnd/design-system'
+import Demo from '../../components/Demo'
+import ToastDemo from '../../components/demos/ToastDemo'
+import SnackbarDemo from '../../components/demos/SnackbarDemo'
+
+# 피드백
+
+사용자에게 상태와 결과를 알려주는 컴포넌트 모음입니다.
+Toast와 Snackbar는 React 컴포넌트가 아닌 **명령형 함수 API**로, `document.body`에 포털을 생성해 동작합니다.
+
+## Toast
+
+화면 하단에 잠시 표시되는 단순 알림입니다. `showToast`로 표시하고 `dismissToast`로 닫습니다.
+
+- 동시에 1개만 표시됩니다.
+- 3초 후 자동으로 사라집니다.
+- 브라우저 환경이 아니면(SSR) 아무 동작도 하지 않습니다.
+
+<Demo>
+  <ToastDemo />
+</Demo>
+
+```tsx
+import { showToast, dismissToast, FillButton, OutlineButton } from '@idbrnd/design-system'
+
+<FillButton onClick={() => showToast({ message: '작업이 완료되었습니다.' })}>
+  기본 토스트
+</FillButton>
+<FillButton
+  variant="assistive"
+  onClick={() => showToast({ variant: 'positive', message: '저장되었습니다.' })}
+>
+  성공 토스트
+</FillButton>
+<FillButton
+  variant="error"
+  onClick={() => showToast({ variant: 'negative', message: '오류가 발생했습니다.' })}
+>
+  오류 토스트
+</FillButton>
+<OutlineButton variant="assistive" onClick={() => dismissToast()}>
+  토스트 닫기
+</OutlineButton>
+```
+
+### showToast 옵션
+
+| 옵션 | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `message` | `ReactNode` | — | **(필수)** 표시할 메시지 |
+| `variant` | `'basic' \| 'positive' \| 'negative'` | `'basic'` | `positive`: 성공(초록 체크 아이콘), `negative`: 경고(삼각형 아이콘) |
+| `icon` | `ReactNode` | — | 커스텀 아이콘. 전달 시 variant 기본 아이콘보다 우선 사용 |
+| `customStyle` | `CSSProperties` | — | 토스트 루트에 적용할 인라인 스타일 |
+
+### dismissToast()
+
+현재 표시 중인 토스트를 즉시 닫습니다.
+
+## Snackbar
+
+더 많은 정보와 액션 버튼을 제공하는 알림 바입니다. `showSnackbar`로 표시하고 `dismissSnackbar`로 닫습니다.
+
+- 동시에 1개만 표시됩니다.
+- 기본 6초 후 자동으로 사라집니다. `closeButton: true`이면 10초로 늘어납니다.
+- 마우스를 올리면 타이머가 일시정지되고, 벗어나면 남은 시간으로 재개됩니다.
+
+<Demo>
+  <SnackbarDemo />
+</Demo>
+
+```tsx
+import { showSnackbar, dismissSnackbar, FillButton, OutlineButton } from '@idbrnd/design-system'
+
+<FillButton
+  onClick={() =>
+    showSnackbar({
+      heading: '저장되었습니다.',
+      description: '변경 사항이 서버에 반영되었습니다.',
+    })
+  }
+>
+  기본 스낵바
+</FillButton>
+<FillButton
+  variant="assistive"
+  onClick={() =>
+    showSnackbar({
+      heading: '메시지가 삭제되었습니다.',
+      actionLabel: '실행 취소',
+      onActionClick: () => dismissSnackbar(),
+      closeButton: true,
+    })
+  }
+>
+  액션 버튼 포함
+</FillButton>
+<FillButton
+  variant="assistive"
+  onClick={() =>
+    showSnackbar({ variant: 'loading', heading: '업로드 중...', description: '잠시 기다려 주세요.' })
+  }
+>
+  로딩 스낵바
+</FillButton>
+<OutlineButton variant="assistive" onClick={() => dismissSnackbar()}>
+  스낵바 닫기
+</OutlineButton>
+```
+
+### showSnackbar 옵션
+
+| 옵션 | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `variant` | `'basic' \| 'loading'` | `'basic'` | `loading`: 좌측에 스피너 표시 |
+| `heading` | `ReactNode` | — | 굵은 헤딩 메시지. 2줄 초과 시 description 스타일로 자동 전환 |
+| `description` | `ReactNode` | — | 보조 설명 메시지 |
+| `icon` | `ReactNode` | — | 커스텀 아이콘. loading 스피너보다 우선 |
+| `actionLabel` | `ReactNode` | — | 우측 액션 버튼 라벨 |
+| `onActionClick` | `() => void` | — | 액션 버튼 클릭 콜백 |
+| `closeButton` | `boolean` | `false` | 닫기 버튼 노출 여부 |
+| `customStyle` | `CSSProperties` | — | 스낵바 루트 인라인 스타일 |
+
+`heading`과 `description`이 모두 비어있으면 스낵바가 표시되지 않습니다.
+
+### dismissSnackbar()
+
+현재 표시 중인 스낵바를 즉시 닫습니다.
+
+## PushBadge
+
+버튼이나 아이콘 위에 얹어 사용하는 알림 뱃지입니다.
+겹쳐서 배치하려면 부모 요소에 `position: relative`를 설정합니다.
+
+<Demo>
+  <div style={{ position: 'relative', width: 'fit-content' }}>
+    <BasicIconButton aria-label="알림">
+      <BellIcon size={20} />
+    </BasicIconButton>
+    <PushBadge variant="dot" />
+  </div>
+  <div style={{ position: 'relative', width: 'fit-content' }}>
+    <BasicIconButton aria-label="알림">
+      <BellIcon size={20} />
+    </BasicIconButton>
+    <PushBadge variant="number" count={5} />
+  </div>
+  <PushBadge variant="number" count={1500} />
+  <PushBadge variant="info" />
+  <PushBadge variant="number" count={3} bgColor="#6366f1" color="#fff" />
+</Demo>
+
+```tsx
+import { BasicIconButton, BellIcon, PushBadge } from '@idbrnd/design-system'
+
+// 아이콘 버튼 위 뱃지 (dot)
+<div style={{ position: 'relative', width: 'fit-content' }}>
+  <BasicIconButton aria-label="알림">
+    <BellIcon size={20} />
+  </BasicIconButton>
+  <PushBadge variant="dot" />
+</div>
+
+// 숫자 뱃지 — maxCount(기본 999) 초과 시 999+ 표시
+<PushBadge variant="number" count={5} />
+<PushBadge variant="number" count={1500} />
+
+// info 뱃지 (? 표시)
+<PushBadge variant="info" />
+
+// 커스텀 색상
+<PushBadge variant="number" count={3} bgColor="#6366f1" color="#fff" />
+
+// disabled 상태 (렌더 안 됨)
+<PushBadge variant="dot" disabled={!hasNotification} />
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `variant` | `'dot' \| 'number' \| 'info'` | `'number'` | `dot`: 빨간 점, `number`: 숫자 카운트, `info`: `?` 표시 |
+| `count` | `number` | `1` | `variant="number"`일 때 표시할 숫자 |
+| `maxCount` | `number` | `999` | 표시 상한. `count`가 초과하면 `999+`처럼 `+`를 붙여 표시 |
+| `bgColor` | `string` | — | 뱃지 배경색 (CSS color 값) |
+| `color` | `string` | — | 뱃지 텍스트 색상 (CSS color 값) |
+| `disabled` | `boolean` | `false` | `true`이면 컴포넌트가 렌더링되지 않음 (`null` 반환) |
+| `customStyle` | `CSSProperties` | — | 추가 인라인 스타일 |
+| `className` | `string` | — | 추가 클래스명 |
+
+## Tooltip
+
+트리거 엘리먼트에 마우스를 올리거나 클릭하면 말풍선 형태의 안내 텍스트를 표시합니다.
+`trigger="always"`로 항상 표시되는 고정 안내 형태로도 사용할 수 있습니다.
+
+<Demo style={{ padding: '3rem 1.5rem' }}>
+  <Tooltip content="안녕하세요!" position="top">
+    <button type="button">Hover me</button>
+  </Tooltip>
+  <Tooltip content="컴팩트 변형" variant="compact" position="bottom">
+    <button type="button">compact</button>
+  </Tooltip>
+  <Tooltip content="화살표 없음" arrow={false} position="right">
+    <button type="button">arrow=false</button>
+  </Tooltip>
+  <Tooltip
+    trigger="click"
+    position="bottom"
+    content={(close) => (
+      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+        <span>메시지를 작성해요.</span>
+        <button type="button" onClick={close}>닫기</button>
+      </div>
+    )}
+  >
+    <button type="button">Click me</button>
+  </Tooltip>
+</Demo>
+
+```tsx
+import { Tooltip } from '@idbrnd/design-system'
+
+// 기본 (hover)
+<Tooltip content="안녕하세요!" position="top">
+  <button>Hover me</button>
+</Tooltip>
+
+// 클릭 트리거 + render function
+<Tooltip
+  trigger="click"
+  position="bottom"
+  content={(close) => (
+    <div>
+      <span>메시지를 작성해요.</span>
+      <button onClick={close}>닫기</button>
+    </div>
+  )}
+>
+  <button>Click me</button>
+</Tooltip>
+
+// 항상 표시 (고정 안내)
+<Tooltip content="필수 입력 항목입니다" trigger="always" position="right">
+  <CircleInfoIcon />
+</Tooltip>
+
+// 말줄임 시에만 표시
+<Tooltip content="긴 텍스트 전체 내용" visibleOnEllipsis>
+  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+    긴 텍스트 전체 내용
+  </span>
+</Tooltip>
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `content` | `ReactNode \| ((close: () => void) => ReactNode)` | — | **(필수)** 툴팁에 표시할 내용. render function 전달 시 `close` 콜백 사용 가능 |
+| `children` | `ReactNode` | — | **(필수)** 툴팁을 트리거할 자식 엘리먼트 |
+| `trigger` | `'hover' \| 'click' \| 'always'` | `'hover'` | 트리거 방식. `'always'`는 항상 표시되는 고정 안내 |
+| `variant` | `'default' \| 'compact'` | `'default'` | 크기 변형. default: 8px 12px, compact: 4px 12px 패딩 |
+| `position` | `'top' \| 'top-left' \| 'top-right' \| 'bottom' \| 'bottom-left' \| 'bottom-right' \| 'left' \| 'left-top' \| 'left-bottom' \| 'right' \| 'right-top' \| 'right-bottom'` | `'top'` | 툴팁 표시 위치 (12방향) |
+| `arrow` | `boolean` | `true` | 화살표(꼬리표) 표시 여부 |
+| `as` | `keyof JSX.IntrinsicElements` | `'span'` | 트리거 래퍼 HTML 태그. 테이블 셀 등에서는 `'td'`, `'div'` 등으로 변경 |
+| `visibleOnEllipsis` | `boolean` | `false` | `true`이면 자식에 말줄임이 발생했을 때만 툴팁 표시 |
+| `backgroundColor` | `string` | — | 툴팁 배경색 커스터마이징 |
+| `contentColor` | `string` | — | 툴팁 텍스트·아이콘 색상 커스터마이징 |
+| `customStyle` | `CSSProperties` | — | 툴팁 박스에 적용할 추가 인라인 스타일 |
+
+유의사항:
+
+- `trigger="click"` 시 외부 클릭, 스크롤, 리사이즈 시 자동으로 닫힙니다.
+- `trigger="always"` 시 마운트 시점부터 항상 표시되며, 스크롤·리사이즈 시 트리거를 따라 위치를 재계산합니다.
+- `position`의 첫 번째 단어는 툴팁이 놓이는 방향, 두 번째 단어는 화살표가 치우치는 방향입니다.
+- 툴팁은 `document.body`에 포탈로 렌더링됩니다.
+
+## Spinner
+
+로딩 상태를 나타내는 4가지 스피너 컴포넌트를 제공합니다.
+
+<Demo>
+  <Spinner />
+  <CustomSpinner size={16} color="var(--semantic-primary-default)" />
+  <Clip size={32} color="var(--semantic-primary-default)" />
+  <Clip size={32} text="로딩 중..." />
+  <FadeSpinner width={4} height={12} />
+</Demo>
+
+```tsx
+import { Spinner, CustomSpinner, Clip, FadeSpinner } from '@idbrnd/design-system'
+
+<Spinner />
+<CustomSpinner size={16} color="var(--semantic-primary-default)" />
+<Clip size={32} color="var(--semantic-primary-default)" />
+<Clip size={32} text="로딩 중..." />
+<FadeSpinner width={4} height={12} />
+```
+
+### Spinner (기본)
+
+`CustomSpinner`를 기본값으로 렌더링하는 래퍼입니다. props 없이 사용합니다.
+
+### CustomSpinner
+
+점 3개가 순차적으로 바운스되는 스피너입니다.
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `size` | `number` | `10` | 점 크기(px) 기준. 점 간격도 비례 계산 |
+| `color` | `string` | `var(--semantic-before-main)` | 점 색상 |
+
+### Clip
+
+원형 링이 회전하는 스피너입니다. 버튼 내부의 `loading` 표시에도 사용됩니다.
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `size` | `number` | `10` | 링 크기(px). 선 두께도 비례 계산 |
+| `color` | `string` | `var(--semantic-before-main)` | 링 색상 |
+| `text` | `string` | `''` | 스피너 아래 표시할 텍스트 |
+
+### FadeSpinner
+
+8개의 막대가 회전하며 페이드되는 스피너입니다.
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `color` | `string` | `var(--semantic-before-main)` | 막대 색상 |
+| `width` | `number` | `4` | 막대 너비(px) |
+| `height` | `number` | `12` | 막대 높이(px) |
+| `radius` | `number` | `2` | 막대 모서리 반지름(px) |
+| `margin` | `number` | `2` | 막대와 중심 사이 간격(px) |

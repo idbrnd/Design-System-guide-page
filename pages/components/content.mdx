@@ -1,0 +1,163 @@
+import { Avatar, AvatarStack, ContentBadge, StateBadge } from '@idbrnd/design-system'
+import Demo from '../../components/Demo'
+
+# 콘텐츠
+
+아바타와 배지 등 콘텐츠 표시용 컴포넌트 모음입니다.
+
+## Avatar
+
+사용자 아바타 이미지를 표시하는 컴포넌트입니다.
+이미지 경로를 전달하지 않으면 기본 아바타 이미지를 사용합니다.
+
+<Demo>
+  <Avatar />
+  <Avatar size="medium" />
+  <Avatar size="large" />
+  <Avatar size="xlarge" />
+  <Avatar size="xlarge" circular />
+  <Avatar size="xlarge" interactionActive onClick={() => console.log('click')} />
+</Demo>
+
+```tsx
+import { Avatar } from '@idbrnd/design-system'
+
+<Avatar />
+<Avatar src={user.thumbnail} />
+<Avatar size="xlarge" circular />
+<Avatar size="xlarge" interactionActive onClick={() => console.log('click')} />
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `src` | `string` | — | 표시할 아바타 이미지 경로. 미지정 시 기본 아바타 사용 |
+| `size` | `'small' \| 'medium' \| 'large' \| 'xlarge'` | `'small'` | 크기. small: 24x24, medium: 32x32, large: 40x40, xlarge: 48x48 |
+| `circular` | `boolean` | `false` | `true`면 원형(`border-radius: 50%`)으로 표시 |
+| `interactionActive` | `boolean` | `false` | `true`면 바깥 2px 인터랙션 영역과 hover/focus/active 상태를 적용 |
+| `onClick` | `MouseEventHandler<HTMLElement>` | — | 클릭 시 호출되는 콜백 |
+| `customStyle` | `CSSProperties` | — | 이미지에 적용할 추가 인라인 스타일 |
+
+유의사항:
+
+- `alt`는 public prop으로 받지 않습니다. 내부적으로 고정된 `"User avatar"`를 사용합니다.
+- `interactionActive={true}`일 때만 포인터 커서가 적용됩니다.
+
+## AvatarStack
+
+작은 아바타를 최대 5개까지 겹쳐서 보여주는 컴포넌트입니다.
+내부적으로 `Avatar`의 기본 `small` 형태를 사용하며, 각 아바타는 내부 1px 흰색 여백을 가진 상태로 렌더링됩니다.
+
+<Demo>
+  <AvatarStack srcList={[undefined, undefined, undefined]} />
+  <AvatarStack srcList={[undefined, undefined, undefined, undefined, undefined, undefined]} />
+</Demo>
+
+```tsx
+import { AvatarStack } from '@idbrnd/design-system'
+
+<AvatarStack srcList={[memberA.thumbnail, memberB.thumbnail, memberC.thumbnail]} />
+
+{/* 이미지가 없는 사용자는 undefined로 기본 아바타 표시 */}
+<AvatarStack srcList={[memberA.thumbnail, undefined, memberC.thumbnail]} />
+
+<AvatarStack srcList={visibleMembers.map((user) => user.thumbnail)} />
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `srcList` | `(string \| null \| undefined)[]` | `[]` | 아바타 슬롯 목록. 각 항목이 한 명의 사용자 슬롯을 의미하며, `null`/`undefined`/빈 문자열이면 기본 아바타를 표시 |
+| `size` | `'small'` | `'small'` | 크기. 현재는 `small`(24x24)만 지원 |
+
+유의사항:
+
+- `srcList`를 3개 주면 3개만 표시하고, 6개 이상 주면 앞 5개만 표시합니다.
+- 이미지가 없는 사용자도 `srcList`에 `undefined`를 넣으면 기본 아바타로 포함할 수 있습니다.
+
+## ContentBadge
+
+텍스트에 variant와 size를 적용하는 인라인 배지 컴포넌트입니다.
+
+<Demo>
+  <ContentBadge variant="basic">기본</ContentBadge>
+  <ContentBadge variant="primary">주요</ContentBadge>
+  <ContentBadge size="default">default</ContentBadge>
+  <ContentBadge size="compact">compact</ContentBadge>
+  <ContentBadge size="compact-small">compact-small</ContentBadge>
+  <ContentBadge contentColor="#6366f1" borderColor="#6366f1">커스텀</ContentBadge>
+</Demo>
+
+```tsx
+import { ContentBadge } from '@idbrnd/design-system'
+
+<ContentBadge variant="basic">기본</ContentBadge>
+<ContentBadge variant="primary">주요</ContentBadge>
+
+<ContentBadge size="default">default</ContentBadge>
+<ContentBadge size="compact">compact</ContentBadge>
+<ContentBadge size="compact-small">compact-small</ContentBadge>
+
+{/* 커스텀 색상 */}
+<ContentBadge contentColor="#6366f1" borderColor="#6366f1">커스텀</ContentBadge>
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `variant` | `'basic' \| 'primary'` | `'basic'` | 색상 변형 |
+| `size` | `'default' \| 'compact' \| 'compact-small'` | `'default'` | 크기 |
+| `contentColor` | `string` | — | 텍스트/아이콘 색상 오버라이드 |
+| `backgroundColor` | `string` | — | 배경색 오버라이드 |
+| `borderColor` | `string` | — | 테두리색 오버라이드 |
+| `customStyle` | `CSSProperties` | — | 추가 인라인 스타일 |
+| `className` | `string` | — | 추가 클래스명 |
+| `children` | `ReactNode` | — | 배지 내용 |
+
+## StateBadge
+
+상태를 표시할 때 사용하는 배지 컴포넌트입니다. `stateIcon` prop으로 variant에 맞는 원형 dot을 표시할 수 있습니다.
+
+<Demo>
+  <StateBadge variant="basic">기본</StateBadge>
+  <StateBadge variant="error">오류</StateBadge>
+  <StateBadge variant="success">성공</StateBadge>
+  <StateBadge variant="info">정보</StateBadge>
+  <StateBadge variant="warning">경고</StateBadge>
+  <StateBadge size="compact">compact</StateBadge>
+  <StateBadge variant="error" stateIcon>오류</StateBadge>
+  <StateBadge variant="success" stateIcon>성공</StateBadge>
+</Demo>
+
+```tsx
+import { StateBadge } from '@idbrnd/design-system'
+
+{/* variant */}
+<StateBadge variant="basic">기본</StateBadge>
+<StateBadge variant="error">오류</StateBadge>
+<StateBadge variant="success">성공</StateBadge>
+<StateBadge variant="info">정보</StateBadge>
+<StateBadge variant="warning">경고</StateBadge>
+
+{/* size */}
+<StateBadge size="default">default</StateBadge>
+<StateBadge size="compact">compact</StateBadge>
+
+{/* stateIcon */}
+<StateBadge variant="error" stateIcon>오류</StateBadge>
+<StateBadge variant="success" stateIcon>성공</StateBadge>
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `variant` | `'basic' \| 'error' \| 'success' \| 'info' \| 'warning'` | `'basic'` | 상태 색상 변형 |
+| `size` | `'default' \| 'compact'` | `'default'` | 크기 |
+| `stateIcon` | `boolean` | `false` | `true`이면 variant 색상의 원형 dot 표시 |
+| `customStyle` | `CSSProperties` | — | 추가 인라인 스타일 |
+| `className` | `string` | — | 추가 클래스명 |
+| `children` | `ReactNode` | — | 배지 내용 |

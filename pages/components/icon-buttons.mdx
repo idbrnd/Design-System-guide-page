@@ -1,0 +1,105 @@
+import {
+  BasicIconButton,
+  FillIconButton,
+  OutlineIconButton,
+  SearchIcon,
+  PlusIcon,
+  ShareIcon,
+  BellIcon,
+} from '@idbrnd/design-system'
+import Demo from '../../components/Demo'
+
+# 아이콘 버튼
+
+아이콘 전용 버튼 3종입니다. 텍스트 버튼과 달리 `loading`, `widthType` prop이 없습니다. 모든 버튼은 네이티브 `<button>` 속성(`onClick`, `disabled`, `type`, `aria-*` 등)을 그대로 사용할 수 있습니다. 아이콘만 담기 때문에 스크린 리더를 위해 `aria-label` 지정을 권장합니다.
+
+데모에 사용한 아이콘(`SearchIcon`, `PlusIcon` 등)은 `@idbrnd/design-system`에서 개별 import할 수 있습니다.
+
+## 공통 Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `size` | `'large' \| 'medium'` | `'medium'` | 버튼 크기 |
+| `keepFocusOnClick` | `boolean` | `false` | 클릭 후 포커스 유지 여부 |
+| `disabled` | `boolean` | `false` | 비활성화 |
+| `customStyle` | `CSSProperties` | — | 인라인 스타일 (`style` 대신 사용) |
+| `children` | `ReactNode` | — | 버튼 안에 렌더링할 아이콘 |
+
+## BasicIconButton
+
+배경/테두리 없이 아이콘만 담는 최소형 버튼입니다. `PushBadge`와 함께 사용하는 경우가 많습니다.
+
+<Demo>
+  <BasicIconButton size="large" aria-label="검색"><SearchIcon /></BasicIconButton>
+  <BasicIconButton size="large" touchArea="compact" aria-label="검색"><SearchIcon /></BasicIconButton>
+  <BasicIconButton size="medium" aria-label="알림"><BellIcon size={20} /></BasicIconButton>
+  <BasicIconButton size="medium" disabled aria-label="검색"><SearchIcon size={20} /></BasicIconButton>
+</Demo>
+
+```tsx
+import { BasicIconButton, SearchIcon, BellIcon } from '@idbrnd/design-system'
+
+<BasicIconButton size="large" aria-label="검색"><SearchIcon /></BasicIconButton>
+<BasicIconButton size="large" touchArea="compact" aria-label="검색"><SearchIcon /></BasicIconButton>
+<BasicIconButton size="medium" aria-label="알림"><BellIcon size={20} /></BasicIconButton>
+<BasicIconButton size="medium" disabled aria-label="검색"><SearchIcon size={20} /></BasicIconButton>
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `size` | `'large' \| 'medium'` | `'medium'` | 아이콘 크기 (large: 24×24, medium: 20×20) |
+| `touchArea` | `'default' \| 'compact'` | `'default'` | 인터랙션(hover/focus/active)이 적용되는 터치 영역. `large`는 default(44×44)/compact(36×36) 모두 지원, `medium`은 default(32×32)만 지원 — `compact`를 전달하면 `default`로 처리됩니다 |
+
+나머지는 [공통 Props](#공통-props)와 동일합니다.
+
+## FillIconButton
+
+배경이 채워진 아이콘 버튼입니다.
+
+<Demo>
+  <FillIconButton aria-label="추가"><PlusIcon /></FillIconButton>
+  <FillIconButton variant="primary" size="large" aria-label="추가"><PlusIcon /></FillIconButton>
+  <FillIconButton variant="overlay" aria-label="추가"><PlusIcon /></FillIconButton>
+  <FillIconButton variant="primary" disabled aria-label="추가"><PlusIcon /></FillIconButton>
+</Demo>
+
+```tsx
+import { FillIconButton, PlusIcon } from '@idbrnd/design-system'
+
+<FillIconButton aria-label="추가"><PlusIcon /></FillIconButton>
+<FillIconButton variant="primary" size="large" aria-label="추가"><PlusIcon /></FillIconButton>
+<FillIconButton variant="overlay" aria-label="추가"><PlusIcon /></FillIconButton>
+<FillIconButton variant="primary" disabled aria-label="추가"><PlusIcon /></FillIconButton>
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `variant` | `'basic' \| 'overlay' \| 'primary'` | `'basic'` | 색상 변형. `overlay`는 이미지 위에 겹쳐 올릴 때 사용합니다 |
+
+나머지는 [공통 Props](#공통-props)와 동일합니다.
+
+## OutlineIconButton
+
+테두리 스타일 아이콘 버튼입니다. `variant` prop이 없습니다.
+
+<Demo>
+  <OutlineIconButton size="large" aria-label="공유"><ShareIcon /></OutlineIconButton>
+  <OutlineIconButton aria-label="공유"><ShareIcon /></OutlineIconButton>
+  <OutlineIconButton disabled aria-label="공유"><ShareIcon /></OutlineIconButton>
+</Demo>
+
+```tsx
+import { OutlineIconButton, ShareIcon } from '@idbrnd/design-system'
+
+<OutlineIconButton size="large" aria-label="공유"><ShareIcon /></OutlineIconButton>
+<OutlineIconButton aria-label="공유"><ShareIcon /></OutlineIconButton>
+<OutlineIconButton disabled aria-label="공유"><ShareIcon /></OutlineIconButton>
+```
+
+### Props
+
+[공통 Props](#공통-props)와 동일합니다.

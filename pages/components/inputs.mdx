@@ -1,0 +1,233 @@
+import Demo from '../../components/Demo'
+import {
+  InputBasicDemo,
+  InputStatesDemo,
+  InputAppearanceDemo,
+} from '../../components/demos/InputDemo'
+import {
+  SearchBarBasicDemo,
+  SearchBarErrorDemo,
+} from '../../components/demos/SearchBarDemo'
+
+# 입력
+
+텍스트 입력 컴포넌트 2종입니다. `Input`과 `SearchBar`는 모두 **controlled 전용**입니다 — `value`가 필수이며 `defaultValue`는 지원하지 않습니다. 반드시 `value` + `onChange`로 값을 직접 제어해야 합니다.
+
+## Input
+
+`value` + `onChange`를 받는 controlled 입력 컴포넌트입니다. 라벨(`heading`), 안내 문구(`description`), 에러 문구(`errorMessage`), 아이콘 슬롯까지 하나의 컴포넌트로 구성합니다.
+
+<Demo column>
+  <InputBasicDemo />
+</Demo>
+
+```tsx
+import { useState } from 'react'
+import { Input } from '@idbrnd/design-system'
+
+function InputExample() {
+  const [email, setEmail] = useState('')
+
+  return (
+    <Input
+      headingContent="이메일"
+      placeholder="이메일을 입력하세요"
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+      description="가입 안내 메일을 받을 주소입니다."
+    />
+  )
+}
+```
+
+### 상태
+
+`errorMessage`에 의미 있는 값이 전달되면 `variant` 지정 여부와 관계없이 에러 상태가 우선 적용됩니다. 성공 상태는 `variant="success"`로 지정합니다.
+
+<Demo column>
+  <InputStatesDemo />
+</Demo>
+
+```tsx
+<Input
+  headingContent="비밀번호"
+  type="password"
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+  errorMessage="비밀번호가 일치하지 않습니다."
+/>
+
+<Input
+  headingContent="아이디"
+  variant="success"
+  value={id}
+  onChange={(e) => setId(e.target.value)}
+  description="사용 가능한 아이디입니다."
+/>
+
+<Input headingContent="닉네임" value="수정할 수 없는 값" onChange={() => {}} disabled />
+```
+
+### 외형과 슬롯
+
+`heading={false}`로 라벨을 숨기고, `leadingIcon`으로 좌측 아이콘을 넣을 수 있습니다. `designType="fill"`, `size="small"`, `width`로 외형을 조절합니다.
+
+<Demo column>
+  <InputAppearanceDemo />
+</Demo>
+
+```tsx
+import { Input, SearchIcon } from '@idbrnd/design-system'
+
+<Input
+  heading={false}
+  placeholder="검색어를 입력하세요"
+  value={keyword}
+  onChange={(e) => setKeyword(e.target.value)}
+  leadingIcon={<SearchIcon size={20} />}
+/>
+
+<Input
+  headingContent="금액"
+  designType="fill"
+  size="small"
+  width={240}
+  required
+  value={amount}
+  onChange={(e) => setAmount(e.target.value)}
+/>
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `value` | `string \| number \| readonly string[]` | — | **(필수)** 입력값. controlled 전용이므로 반드시 전달해야 합니다 |
+| `onChange` | `ChangeEventHandler<HTMLInputElement>` | — | 값 변경 핸들러 |
+| `type` | `HTMLInputTypeAttribute` | `'text'` | 실제 HTML input 타입 (`text`, `password`, `email` 등) |
+| `designType` | `'outline' \| 'fill'` | `'outline'` | Input 컨테이너 외형 |
+| `size` | `'default' \| 'small'` | `'default'` | Input 높이 (default: 44px, small: 40px) |
+| `variant` | `'basic' \| 'error' \| 'onTyping' \| 'typed' \| 'onFocus' \| 'success'` | 자동 계산 | 수동 상태 지정. 미지정 시 값 존재 여부에 따라 `basic`/`typed`가 자동 계산되며, 포커스 시각 상태는 CSS interaction으로 처리됩니다. `errorMessage`가 있으면 `error`가 우선 적용 |
+| `width` | `number \| string` | `'100%'` | 루트 너비 |
+| `heading` | `boolean` | `true` | 상단 라벨 표시 여부 |
+| `headingContent` | `ReactNode` | `'Label'` | 상단 라벨 내용 |
+| `required` | `boolean` | `false` | 필수 입력 표시(`*`) 및 native `required` 속성 적용 |
+| `description` | `ReactNode \| boolean` | `false` | 하단 안내 문구. `true`면 기본 안내 문구를 사용 |
+| `fixedDescriptionHeight` | `boolean` | `true` | helper 영역 높이 고정 여부 (레이아웃 점프 방지) |
+| `errorMessage` | `ReactNode` | 기본 에러 문구 | 의미 있는 값이 전달되면 에러 상태가 자동 적용되고 해당 메시지가 표시됨 |
+| `leadingIcon` | `ReactNode` | — | 입력 필드 좌측 아이콘 |
+| `trailingContent` | `ReactNode` | — | 입력 필드 우측 콘텐츠 |
+| `readOnly` | `boolean` | `false` | 읽기 전용 |
+| `disabled` | `boolean` | `false` | 비활성화 |
+| `customStyle` | `CSSProperties` | `{}` | 루트 컨테이너에 적용할 추가 인라인 스타일 |
+
+### 유의사항
+
+- **controlled 전용입니다.** `value`가 필수이며 `defaultValue`는 지원하지 않습니다.
+- `errorMessage`에 의미 있는 값이 있으면 `variant` 값보다 우선해서 에러 상태가 적용됩니다. 빈 문자열, 공백 문자열, 내용 없는 JSX 래퍼는 에러로 처리하지 않습니다.
+- `variant="error"`일 때는 `description` 대신 에러 문구가 우선 노출되며, `errorMessage`를 생략하면 기본 에러 문구가 표시됩니다.
+- `description={true}`를 전달하면 기본 안내 문구(`2~19자 이내로 입력해 주세요.`)가 표시됩니다.
+- `fixedDescriptionHeight={true}`면 안내/에러 문구가 없을 때도 helper 영역 높이를 유지해 레이아웃 점프를 방지합니다.
+- helper 문구(`description`, `errorMessage`)는 기본적으로 줄바꿈되지 않습니다. 특정 케이스에서만 줄바꿈이 필요하면 래퍼 노드에 `maxWidth`를 주거나 `<br />`를 사용하세요.
+- `id`, `name`, `placeholder`, `autoComplete`, `maxLength`, `onFocus`, `onBlur` 등 대부분의 native `<input>` props를 함께 사용할 수 있습니다. 단, `style`과 `className`은 prop 타입에서 제외되어 있으므로 `customStyle`을 사용하세요.
+
+```tsx
+<Input
+  value={value}
+  onChange={onChange}
+  errorMessage={
+    <span
+      style={{
+        display: 'inline-block',
+        maxWidth: '240px',
+        whiteSpace: 'normal',
+        wordBreak: 'keep-all',
+      }}
+    >
+      긴 에러 문구를 이 케이스에서만 두 줄로
+      <br />
+      보여주고 싶을 때 사용할 수 있습니다.
+    </span>
+  }
+/>
+```
+
+## SearchBar
+
+`Input` 기반의 검색 전용 컴포넌트입니다. `Enter` 입력 또는 우측 검색 버튼 클릭 시 `onSearch`를 호출합니다. `type`은 항상 `text`로 고정됩니다.
+
+<Demo column>
+  <SearchBarBasicDemo />
+</Demo>
+
+```tsx
+import { useState } from 'react'
+import { SearchBar } from '@idbrnd/design-system'
+
+function SearchExample() {
+  const [keyword, setKeyword] = useState('')
+
+  return (
+    <SearchBar
+      value={keyword}
+      onChange={(e) => setKeyword(e.target.value)}
+      onSearch={(value) => console.log('search:', value)}
+      placeholder="검색어를 입력하세요"
+    />
+  )
+}
+```
+
+### 에러 상태
+
+검증 규칙과 에러 문구는 컴포넌트 내부에서 만들지 않고, 사용하는 쪽에서 직접 제어합니다. `errorMessage`가 전달되면 에러 스타일이 자동 적용됩니다.
+
+<Demo column>
+  <SearchBarErrorDemo />
+</Demo>
+
+```tsx
+function SearchErrorExample() {
+  const [keyword, setKeyword] = useState('a')
+
+  const errorMessage =
+    keyword.length === 1
+      ? '검색어를 2자 이상 입력해 주세요.'
+      : keyword.length >= 20
+        ? '검색어는 19자 이하로 입력해 주세요.'
+        : undefined
+
+  return (
+    <SearchBar
+      value={keyword}
+      onChange={(e) => setKeyword(e.target.value)}
+      onSearch={(value) => console.log('search:', value)}
+      errorMessage={errorMessage}
+      placeholder="검색어를 입력하세요"
+    />
+  )
+}
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `value` | `string` | — | **(필수)** 입력값 |
+| `onChange` | `ChangeEventHandler<HTMLInputElement>` | — | **(필수)** 변경 핸들러 |
+| `onSearch` | `(value: string) => void` | — | **(필수)** `Enter` 입력 또는 검색 버튼 클릭 시 실행되는 콜백 |
+| `onClear` | `() => void` | — | 삭제 버튼 클릭 콜백. 미지정 시 기본 동작 사용 |
+| `variant` | `'default' \| 'onTyping' \| 'typed' \| 'error'` | — | 상태 변형. `errorMessage`가 있으면 `error`가 우선 적용 |
+| `size` | `'default' \| 'small'` | `'default'` | 크기 |
+| `heading` | `boolean` | `false` | 상단 라벨 표시 여부 (`Input`과 달리 기본값이 `false`) |
+| `errorMessage` | `ReactNode` | — | 의미 있는 값이 전달되면 에러 상태가 자동 적용되고 해당 문구가 표시됨 |
+| `maxLength` | `number` | `20` | native `input`의 `maxLength` 속성으로 전달 |
+| `disabled` | `boolean` | `false` | 비활성화 |
+| `customStyle` | `CSSProperties` | — | 추가 인라인 스타일 |
+
+### 유의사항
+
+- `SearchBar`는 UI 컴포넌트로만 동작하며, 길이 검증이나 문구 생성 로직은 포함하지 않습니다. 검증은 사용하는 쪽에서 `errorMessage`로 직접 제어하세요.
+- `errorMessage`가 비거나 내용 없는 JSX 래퍼만 남으면 에러로 처리하지 않고, `variant` prop 또는 기본 자동 상태(`default`/`typed`)로 되돌아갑니다.
+- `type`, `value`, `onChange`, `variant`를 제외한 나머지 props(`designType`, `description`, `fixedDescriptionHeight`, `leadingIcon`, `trailingContent` 등)는 `Input`과 동일하게 사용할 수 있습니다.
+- `trailingContent`를 지정하지 않으면 기본 검색 버튼이 표시됩니다.

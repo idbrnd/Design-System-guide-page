@@ -1,0 +1,168 @@
+import { CheckBox, Radio, ToggleSwitch } from '@idbrnd/design-system'
+import Demo from '../../components/Demo'
+import { CheckBoxBasicDemo } from '../../components/demos/CheckBoxDemo'
+import { RadioGroupDemo } from '../../components/demos/RadioDemo'
+import { ToggleSwitchBasicDemo } from '../../components/demos/ToggleSwitchDemo'
+
+# 컨트롤
+
+선택 상태를 다루는 컨트롤 3종입니다. 모두 controlled 방식으로 사용하며, **`onChange`는 DOM 이벤트가 아닌 `boolean` 값을 직접 전달**합니다.
+
+## CheckBox
+
+`checked` + `onChange`를 받는 체크박스입니다.
+
+<Demo>
+  <CheckBoxBasicDemo />
+</Demo>
+
+```tsx
+import { useState } from 'react'
+import { CheckBox } from '@idbrnd/design-system'
+
+function CheckBoxExample() {
+  const [checked, setChecked] = useState(false)
+
+  return (
+    <CheckBox checked={checked} onChange={(value) => setChecked(value)}>
+      알림 받기
+    </CheckBox>
+  )
+}
+```
+
+### 변형
+
+<Demo>
+  <CheckBox checked indeterminate onChange={() => {}}>부분 선택</CheckBox>
+  <CheckBox variant="assistive" size="small" density="compact" checked onChange={() => {}}>소형 옵션</CheckBox>
+  <CheckBox checked disabled>비활성 옵션</CheckBox>
+</Demo>
+
+```tsx
+{/* indeterminate: checked와 함께 사용 */}
+<CheckBox checked indeterminate onChange={() => {}}>부분 선택</CheckBox>
+
+{/* variant / size / density */}
+<CheckBox variant="assistive" size="small" density="compact" checked onChange={() => {}}>
+  소형 옵션
+</CheckBox>
+
+<CheckBox checked disabled>비활성 옵션</CheckBox>
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `checked` | `boolean` | `false` | 체크 상태 |
+| `onChange` | `(checked: boolean) => void` | — | 변경 핸들러. DOM 이벤트가 아닌 `boolean`을 전달받음 |
+| `indeterminate` | `boolean` | `false` | `checked={true}`와 함께 사용 시 대시(–) 아이콘 표시 |
+| `children` | `ReactNode` | — | 체크박스 우측에 렌더링할 라벨/콘텐츠 |
+| `variant` | `'primary' \| 'assistive'` | `'primary'` | 색상 변형 |
+| `size` | `'medium' \| 'small'` | `'medium'` | 크기 |
+| `density` | `'default' \| 'compact'` | `'default'` | wrapper 밀도 |
+| `disabled` | `boolean` | `false` | 비활성화 |
+| `customStyle` | `CSSProperties` | — | 추가 인라인 스타일 |
+
+### 유의사항
+
+- `indeterminate={true}`는 `checked={true}`일 때만 대시 아이콘을 표시합니다.
+- `density="compact"`은 wrapper 크기만 줄이며, 아이콘은 `size` 기준으로 그대로 표시됩니다.
+- `children`을 전달하면 라벨 영역까지 함께 클릭되어 체크/해제됩니다.
+
+## Radio
+
+그룹 내 단일 선택을 위한 라디오 버튼입니다.
+
+<Demo>
+  <RadioGroupDemo />
+</Demo>
+
+```tsx
+import { useState } from 'react'
+import { Radio } from '@idbrnd/design-system'
+
+function RadioGroupExample() {
+  const [selected, setSelected] = useState('A')
+
+  return (
+    <>
+      {['A', 'B', 'C'].map((v) => (
+        <Radio
+          key={v}
+          name="group"
+          value={v}
+          checked={selected === v}
+          onChange={(isChecked) => isChecked && setSelected(v)}
+        >
+          Option {v}
+        </Radio>
+      ))}
+    </>
+  )
+}
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `checked` | `boolean` | `false` | 선택 상태 |
+| `onChange` | `(checked: boolean) => void` | — | 변경 핸들러. DOM 이벤트가 아닌 `boolean`을 전달받음 |
+| `name` | `string` | — | native input `name` 속성 |
+| `value` | `string` | — | native input `value` 속성 |
+| `children` | `ReactNode` | — | 라디오 우측에 렌더링할 라벨/콘텐츠 |
+| `variant` | `'primary' \| 'assistive'` | `'primary'` | 색상 변형 |
+| `size` | `'medium' \| 'small'` | `'medium'` | 크기 |
+| `density` | `'default' \| 'compact'` | `'default'` | wrapper 밀도 |
+| `disabled` | `boolean` | `false` | 비활성화 |
+| `customStyle` | `CSSProperties` | — | 추가 인라인 스타일 |
+
+### 유의사항
+
+- `name`이 같아도 자동으로 하나만 선택되지 않습니다. `checked={selected === value}` 비교로 직접 제어해야 합니다.
+- `onChange`는 클릭 시 `true`가 전달됩니다. `isChecked && setSelected(v)` 패턴으로 `true`일 때만 state를 변경하세요.
+- `children`을 전달하면 라벨 영역까지 함께 클릭됩니다.
+
+## ToggleSwitch
+
+On/Off 상태를 토글하는 스위치입니다. 상태 prop 이름이 `checked`가 아닌 **`active`** 입니다.
+
+<Demo>
+  <ToggleSwitchBasicDemo />
+  <ToggleSwitch active disabled />
+</Demo>
+
+```tsx
+import { useState } from 'react'
+import { ToggleSwitch } from '@idbrnd/design-system'
+
+function ToggleSwitchExample() {
+  const [active, setActive] = useState(false)
+
+  return (
+    <>
+      <ToggleSwitch size="large" active={active} onChange={setActive} />
+      <ToggleSwitch active={active} onChange={setActive} />
+      <ToggleSwitch size="small" active={active} onChange={setActive} />
+      <ToggleSwitch active disabled />
+    </>
+  )
+}
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `active` | `boolean` | `false` | 활성(On) 상태 |
+| `onChange` | `(active: boolean) => void` | — | 변경 핸들러. DOM 이벤트가 아닌 `boolean`을 전달받음 |
+| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | 크기 |
+| `disabled` | `boolean` | `false` | 비활성화 |
+| `customStyle` | `CSSProperties` | — | 추가 인라인 스타일 |
+
+### 유의사항
+
+- 체크 상태를 나타내는 prop 이름이 `checked`가 아닌 `active`입니다.
+- `children`(라벨) prop이 없습니다. 라벨이 필요하면 외부에서 함께 배치하세요.
