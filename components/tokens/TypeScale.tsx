@@ -34,7 +34,7 @@ export default function TypeScale() {
               fontSize: t.fontSize,
               // style.css 내장 폰트의 실제 @font-face 이름 (토큰의 'Pretendard Variable'과 다름)
               fontFamily: "PretendardMetricAdjusted, 'Pretendard Variable', sans-serif",
-              lineHeight: 1.35,
+              lineHeight: t.lineHeight || 1.35,
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',

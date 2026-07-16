@@ -64,13 +64,14 @@ const tokens = {
       e.name.startsWith('component-'),
   ),
   typography: byPrefix('text').map((e) => {
-    // 값 형태: var(--semibold600) 56px var(--default) → weight / size / family
-    const m = e.resolved.match(/^(\d+)\s+([\d.]+px)\s+(.+)$/)
+    // 값 형태: "600 56px Family" 또는 "600 16px/140% Family" (reading 계열)
+    const m = e.resolved.match(/^(\d+)\s+([\d.]+px)(?:\/([\d.]+%?))?\s+(.+)$/)
     return {
       ...e,
-      fontWeight: m?.[1] ?? '',
-      fontSize: m?.[2] ?? '',
-      fontFamily: m?.[3] ?? '',
+      fontWeight: m?.[1] ?? '400',
+      fontSize: m?.[2] ?? '16px',
+      lineHeight: m?.[3] ?? '',
+      fontFamily: m?.[4] ?? '',
     }
   }),
   dimension: entries.filter((e) => /^\d+$/.test(e.name)),

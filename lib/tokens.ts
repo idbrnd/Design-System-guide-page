@@ -10,6 +10,7 @@ export interface TokenEntry {
 export interface TypographyToken extends TokenEntry {
   fontWeight: string
   fontSize: string
+  lineHeight: string
   fontFamily: string
 }
 
