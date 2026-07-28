@@ -15,5 +15,6 @@ next-env.d.ts
 
 # local tooling
 .bkit
-.claude/
+.claude/*
+!.claude/skills/
 .vscode/
