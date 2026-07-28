@@ -10,7 +10,7 @@
 | 문서 엔진 | Nextra 3 + `nextra-theme-docs` |
 | 런타임 | React 18 |
 | 언어 | TypeScript |
-| 대상 패키지 | `@idbrnd/design-system@3.0.1` |
+| 대상 패키지 | `@idbrnd/design-system@3.0.2` |
 
 > 문서 사이트 자체는 라이트 모드 전용입니다(`theme.config.tsx`의 `forcedTheme: 'light'`).
 
