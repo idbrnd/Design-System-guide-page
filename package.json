@@ -12,7 +12,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@idbrnd/design-system": "3.0.1",
+    "@idbrnd/design-system": "3.0.2",
     "next": "14.2.35",
     "nextra": "3.3.1",
     "nextra-theme-docs": "3.3.1",
