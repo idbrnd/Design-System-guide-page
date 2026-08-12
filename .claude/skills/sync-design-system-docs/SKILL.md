@@ -92,18 +92,20 @@ npm install @idbrnd/design-system@<새버전>
 
 | 문서 | 소스 (`src/components/`) |
 | --- | --- |
-| `buttons.mdx` | `Button/{Fill,Outline,Text,Weak}` |
+| `buttons.mdx` | `Button/{Fill,Outline,Tertiary,Text,Weak}` |
 | `icon-buttons.mdx` | `IconButton/{BasicIcon,FillIcon,OutlineIcon}` |
 | `chips.mdx` | `Chip/{Chip,ChipGroup,FilterChip,FilterBar}` |
 | `content.mdx` | `Content/{Avatar,AvatarStack,ContentBadge,StateBadge}` |
 | `controls.mdx` | `Control/{CheckBox,Radio,ToggleSwitch}` |
+| `dialog.mdx` | `Feedback/{Modal,Popup}` |
 | `dropdown.mdx` | `Dropdown/` |
-| `inputs.mdx` | `Input/`, `SearchBar/` |
+| `inputs.mdx` | `Input/`, `SearchBar/`, `Textarea/` |
+| `picker.mdx` | `DatePicker/`, `TimePicker/` |
 | `select.mdx` | `Select/` |
 | `segmented-control.mdx` | `SegmentedControl/` |
 | `tab.mdx` | `Tab/` |
 | `table.mdx` | `Table/`, `Pagination/` |
-| `feedback.mdx` | `Feedback/{Toast,Snackbar,PushBadge}`, `Tooltip/`, `Spinner/` |
+| `feedback.mdx` | `Feedback/{Toast,Snackbar,PushBadge,EmptyState}`, `Tooltip/`, `Spinner/` |
 
 대조 방법:
 
@@ -115,7 +117,7 @@ grep -n "^| \`" pages/components/<page>.mdx
 sed -n '1,60p' <원본레포>/src/components/<경로>.tsx
 ```
 
-`Tooltip`, `Spinner`, `FilterChip`/`FilterBar`, `Pagination`은 전용 페이지가 없고 다른 문서에 얹혀 있다 — 페이지 이름만 보고 빠뜨리지 않는다.
+`Tooltip`, `Spinner`, `FilterChip`/`FilterBar`, `Pagination`, `Textarea`, `EmptyState`는 전용 페이지가 없고 다른 문서에 얹혀 있다 — 페이지 이름만 보고 빠뜨리지 않는다. `Modal`/`Popup`은 소스상 `Feedback/` 하위지만 문서는 `dialog.mdx`다.
 
 ### 6. 신규 컴포넌트 문서 작성
 
