@@ -1,0 +1,155 @@
+import Demo from '../../components/Demo'
+import { ModalDemo, PopupDemo } from '../../components/demos/DialogDemos'
+
+# Dialog
+
+화면 위에 겹쳐 표시되는 다이얼로그 컴포넌트 2종입니다. `Modal`은 콘텐츠가 많은 작업 화면에, `Popup`은 짧은 확인·안내에 사용합니다.
+
+두 컴포넌트 모두 **controlled 전용**입니다 — `open` + `onClose`로 표시 여부를 직접 제어합니다. 열리면 다이얼로그로 포커스가 이동하고, 닫힐 때는 닫힘 애니메이션을 재생한 뒤 unmount됩니다. 여러 개를 겹쳐 열면 공용 오버레이 스택으로 관리되어 ESC는 가장 위의 다이얼로그만 닫습니다.
+
+## Modal
+
+헤더(Nav Bar) · 콘텐츠 · 액션 영역으로 구성된 다이얼로그입니다. 콘텐츠가 길면 콘텐츠 영역만 내부 스크롤되고, 열려 있는 동안 배경 스크롤은 잠깁니다.
+
+<Demo>
+  <ModalDemo />
+</Demo>
+
+```tsx
+import { useState } from 'react'
+import { FillButton, Modal } from '@idbrnd/design-system'
+
+function ModalExample() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <>
+      <FillButton onClick={() => setOpen(true)}>모달 열기</FillButton>
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        size="medium"
+        heading="모달 타이틀"
+        mainAction={{ label: '확인', onClick: () => setOpen(false) }}
+        subAction={{ label: '취소', onClick: () => setOpen(false) }}
+      >
+        <p>모달 콘텐츠 영역입니다. 임의의 ReactNode를 children으로 전달합니다.</p>
+      </Modal>
+    </>
+  )
+}
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `open` | `boolean` | — | **(필수)** 모달 표시 여부 (controlled) |
+| `onClose` | `() => void` | — | **(필수)** ESC 키·닫기 버튼·딤 클릭으로 닫힐 때 호출 |
+| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | 모달 너비 프리셋 |
+| `type` | `'fixed' \| 'hug'` | `'fixed'` | `fixed`: size별 고정 너비 (440 / 840 / 1440), `hug`: 콘텐츠에 맞춰 size별 min~max 범위에서 결정 |
+| `heading` | `ReactNode` | — | 헤더 타이틀 |
+| `navBar` | `boolean` | `true` | 헤더(Nav Bar) 노출 여부 |
+| `showClose` | `boolean` | `true` | 헤더 우측 끝 닫기(X) 버튼 노출 여부 |
+| `navLeadingSlot` | `ReactNode` | — | 헤더 좌측 슬롯 |
+| `navTrailingSlot` | `ReactNode` | — | 헤더 우측 슬롯 (닫기 버튼 왼쪽에 배치) |
+| `mainAction` | `ModalAction` | — | 메인 액션 — `FillButton`으로 렌더링 |
+| `subAction` | `ModalAction` | — | 서브 액션 — `OutlineButton`으로 렌더링 (메인 액션 좌측) |
+| `actionSlot` | `ReactNode` | — | 지정 시 `mainAction`/`subAction` 대신 액션 영역을 통째로 교체 |
+| `closeOnEsc` | `boolean` | `true` | ESC 키로 닫기 허용 |
+| `closeOnDimClick` | `boolean` | `false` | 딤 클릭으로 닫기 허용 |
+| `children` | `ReactNode` | — | 콘텐츠 영역 |
+| `customStyle` | `CSSProperties` | — | 추가 인라인 스타일 |
+| `className` | `string` | — | 추가 클래스명 |
+
+`ModalAction` 형태:
+
+```ts
+interface ModalAction {
+  label: string
+  onClick: () => void
+  loading?: boolean
+  disabled?: boolean
+}
+```
+
+## Popup
+
+타이틀·본문·액션 버튼만으로 구성된 짧은 확인용 다이얼로그입니다. 너비는 콘텐츠에 맞춰 최대 440px까지 확장됩니다. `heading`과 `body` 중 **최소 하나는 반드시 전달**해야 합니다.
+
+<Demo>
+  <PopupDemo />
+</Demo>
+
+```tsx
+import { useState } from 'react'
+import { FillButton, Popup } from '@idbrnd/design-system'
+
+function PopupExample() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <>
+      <FillButton onClick={() => setOpen(true)}>팝업 열기</FillButton>
+      <Popup
+        open={open}
+        onClose={() => setOpen(false)}
+        heading="변경 사항을 저장할까요?"
+        body="저장하지 않으면 지금까지의 수정 내용이 사라집니다."
+        mainAction={{ label: '저장', onClick: () => setOpen(false) }}
+        subAction={{ label: '취소', onClick: () => setOpen(false) }}
+      />
+    </>
+  )
+}
+```
+
+데이터 삭제처럼 파괴적인 행동을 확인할 때는 메인 액션에 `variant: 'error'`를 지정합니다.
+
+```tsx
+<Popup
+  open={open}
+  onClose={() => setOpen(false)}
+  heading="게시글을 삭제할까요?"
+  body="삭제한 게시글은 복구할 수 없습니다."
+  mainAction={{ label: '삭제', variant: 'error', onClick: handleDelete }}
+  subAction={{ label: '취소', onClick: () => setOpen(false) }}
+/>
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `open` | `boolean` | — | **(필수)** 팝업 표시 여부 (controlled) |
+| `onClose` | `() => void` | — | **(필수)** ESC 키·딤 클릭으로 닫힐 때 호출 |
+| `platform` | `'web' \| 'mobile'` | `'web'` | 플랫폼별 크기 프리셋. `web`: 버튼 medium + 우측 정렬, `mobile`: 버튼 large + 동일 너비 분할 |
+| `variant` | `'basic' \| 'text'` | `'basic'` | 액션 버튼 형태. `basic`: `FillButton`(메인) + `OutlineButton`(서브), `text`: `TextButton` 우측 정렬 |
+| `heading` | `ReactNode` | — | 타이틀. 미지정 시 미노출 (`body`와 둘 중 하나는 필수) |
+| `body` | `ReactNode` | — | 본문. 미지정 시 미노출 (`heading`과 둘 중 하나는 필수) |
+| `mainAction` | `PopupAction` | — | 메인 액션 — 우측 배치, 시각적 위계 최상위 |
+| `subAction` | `PopupAction` | — | 서브 액션 — 메인 액션 좌측 배치 |
+| `actionSlot` | `ReactNode` | — | 지정 시 `mainAction`/`subAction` 대신 액션 영역을 통째로 교체 |
+| `closeOnEsc` | `boolean` | `true` | ESC 키로 닫기 허용 |
+| `closeOnDimClick` | `boolean` | `false` | 딤 클릭으로 닫기 허용 |
+| `customStyle` | `CSSProperties` | — | 추가 인라인 스타일 |
+| `className` | `string` | — | 추가 클래스명 |
+
+`PopupAction` 형태 — `ModalAction`과 달리 메인 액션 색상(`variant`)을 지정할 수 있습니다:
+
+```ts
+interface PopupAction {
+  label: string
+  onClick: () => void
+  variant?: 'primary' | 'error' // 메인 액션에만 적용, 기본값 'primary'
+  loading?: boolean
+  disabled?: boolean
+}
+```
+
+## 유의사항
+
+- 두 컴포넌트 모두 controlled 전용입니다. `open`을 바꾸는 것 외에 여닫는 방법은 없으며, 내부 닫기 동작(ESC·딤 클릭·닫기 버튼)은 모두 `onClose` 호출로 이어집니다.
+- `closeOnDimClick`은 기본값이 `false`입니다 — 딤을 클릭해도 닫히지 않게 하는 쪽이 기본입니다.
+- 딤에서 누르기 시작해 다이얼로그 안에서 뗀 드래그는 닫기로 처리하지 않습니다.
+- `Popup`의 서브 액션에는 `variant: 'error'`가 적용되지 않습니다 (메인 액션 전용).

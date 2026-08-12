@@ -3,7 +3,10 @@ import {
   BellIcon,
   Clip,
   CustomSpinner,
+  EmptyState,
   FadeSpinner,
+  FillButton,
+  FolderIcon,
   PushBadge,
   Spinner,
   Tooltip,
@@ -339,3 +342,42 @@ import { Spinner, CustomSpinner, Clip, FadeSpinner } from '@idbrnd/design-system
 | `height` | `number` | `12` | 막대 높이(px) |
 | `radius` | `number` | `2` | 막대 모서리 반지름(px) |
 | `margin` | `number` | `2` | 막대와 중심 사이 간격(px) |
+
+## EmptyState
+
+데이터가 없거나 결과가 비어 있는 상태를 안내하는 컴포넌트입니다.
+네 개의 슬롯(`visualContent`, `headingContent`, `descriptionContent`, `buttonContent`)으로 구성되며, **넘기지 않은 슬롯은 영역 자체가 렌더링되지 않습니다.**
+
+<Demo style={{ justifyContent: 'center' }}>
+  <EmptyState
+    size="medium"
+    visualContent={<FolderIcon size={48} color="var(--semantic-before-main)" />}
+    headingContent="저장된 문서가 없어요"
+    descriptionContent={'새 문서를 만들면 이곳에 표시됩니다.\n첫 문서를 만들어 보세요.'}
+    buttonContent={<FillButton size="small">문서 만들기</FillButton>}
+  />
+</Demo>
+
+```tsx
+import { EmptyState, FillButton, FolderIcon } from '@idbrnd/design-system'
+
+<EmptyState
+  size="medium"
+  visualContent={<FolderIcon size={48} color="var(--semantic-before-main)" />}
+  headingContent="저장된 문서가 없어요"
+  descriptionContent={'새 문서를 만들면 이곳에 표시됩니다.\n첫 문서를 만들어 보세요.'}
+  buttonContent={<FillButton size="small">문서 만들기</FillButton>}
+/>
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `size` | `'large' \| 'medium' \| 'small'` | `'small'` | 배치 구역의 크기·위계에 따른 사이즈 |
+| `visualContent` | `ReactNode` | — | 상단 시각 요소 슬롯. 일러스트·아이콘·이미지 등 임의의 노드 |
+| `headingContent` | `ReactNode` | — | 타이틀. 상황을 짧게 요약하며 단일 행 권장 |
+| `descriptionContent` | `ReactNode` | — | 설명. 개행(`\n`)이 그대로 반영되며 두 줄 권장 |
+| `buttonContent` | `ReactNode` | — | CTA 버튼 슬롯. 원하는 버튼 컴포넌트를 직접 전달 |
+| `customStyle` | `CSSProperties` | `{}` | 루트에 적용할 추가 인라인 스타일 |
+| `className` | `string` | — | 추가 클래스명 |

@@ -1,0 +1,178 @@
+import Demo from '../../components/Demo'
+import {
+  DatePickerBasicDemo,
+  DatePickerRangeDemo,
+  DatePickerTimeDemo,
+  TimePickerBasicDemo,
+  TimePickerTriggerDemo,
+} from '../../components/demos/PickerDemos'
+
+# Picker
+
+날짜·시간 선택 컴포넌트 2종입니다. 두 컴포넌트 모두 **controlled 전용**이며(`value` + `onChange` 필수), 트리거를 클릭하면 팝오버(달력·휠)가 열립니다. 팝오버는 `document.body`에 포탈로 렌더링되고, 뷰포트 하단 공간이 부족하면 위쪽으로 열립니다.
+
+## DatePicker
+
+달력 팝오버로 날짜를 선택하는 컴포넌트입니다. `variant`에 따라 단일 날짜(`normal`), 기간(`period`), 2개월 동시 노출 기간(`range`)을 선택할 수 있고, `hasTime`으로 시간 선택까지 확장할 수 있습니다.
+
+<Demo column>
+  <DatePickerBasicDemo />
+</Demo>
+
+```tsx
+import { useState } from 'react'
+import { DatePicker } from '@idbrnd/design-system'
+
+function DatePickerExample() {
+  const [date, setDate] = useState<Date | null>(null)
+
+  return (
+    <>
+      {/* icon 트리거(기본) — 텍스트 필드에 날짜 직접 입력 가능 */}
+      <DatePicker heading="날짜 (icon 트리거)" value={date} onChange={setDate} />
+
+      {/* field 트리거 — 클릭 시에만 달력이 열리고 직접 입력 불가 */}
+      <DatePicker heading="날짜 (field 트리거)" trigger="field" value={date} onChange={setDate} />
+    </>
+  )
+}
+```
+
+### 기간 선택 (period · range)
+
+`variant="period"`/`"range"`에서는 `value`와 `onChange`가 `{ start, end }` 형태의 `DatePickerDateRange`를 사용합니다. `period`는 달력 1개월, `range`는 연속된 2개월을 동시에 노출합니다.
+
+<Demo column>
+  <DatePickerRangeDemo />
+</Demo>
+
+```tsx
+import { useState } from 'react'
+import { DatePicker } from '@idbrnd/design-system'
+import type { DatePickerDateRange } from '@idbrnd/design-system'
+
+function PeriodExample() {
+  const [period, setPeriod] = useState<DatePickerDateRange>({ start: null, end: null })
+
+  return <DatePicker heading="기간" variant="period" value={period} onChange={setPeriod} />
+}
+```
+
+### 시간 포함 (hasTime)
+
+`hasTime`을 켜면 달력 하단에 시간 선택(`TimePicker`의 compact 트리거)이 함께 노출됩니다. 시간까지 텍스트로 표현할 수 없으므로 트리거 종류와 관계없이 직접 입력은 비활성화됩니다.
+
+<Demo column>
+  <DatePickerTimeDemo />
+</Demo>
+
+```tsx
+<DatePicker heading="일시" hasTime value={value} onChange={setValue} />
+```
+
+### Props
+
+`value`/`onChange` 타입은 `variant`에 따라 달라집니다.
+
+| variant | `value` / `onChange` 값 타입 |
+| --- | --- |
+| `'normal'` (기본) | `Date \| null` |
+| `'period'`, `'range'` | `DatePickerDateRange` (`{ start: Date \| null; end: Date \| null }`) |
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `value` | variant에 따름 | — | **(필수)** 현재 선택된 값 |
+| `onChange` | variant에 따름 | — | **(필수)** 값 변경 콜백. `actionArea={false}`면 날짜 선택 즉시 호출 |
+| `variant` | `'normal' \| 'period' \| 'range'` | `'normal'` | `normal`: 단일 날짜, `period`: 기간(1개월 노출), `range`: 기간(2개월 동시 노출) |
+| `trigger` | `'icon' \| 'field'` | `'icon'` | `icon`: 아이콘 버튼 트리거 + 직접 입력 가능, `field`: 클릭 시에만 달력이 열리고 직접 입력 불가 |
+| `heading` | `string` | — | 상단 라벨. 미지정 시 라벨 영역 미노출 |
+| `required` | `boolean` | `false` | 필수 입력 여부. 라벨 노출 시 `*` 표시 |
+| `placeholder` | `string` | 자동 계산 | 트리거 placeholder. 미지정 시 variant·`hasTime`에 맞는 형식(`YYYY-MM-DD`, `YYYY-MM-DD ~ YYYY-MM-DD` 등) |
+| `disabled` | `boolean` | `false` | 전체 비활성화 |
+| `hasTime` | `boolean` | `false` | 날짜 하단에 시간 입력(HH:MM) 함께 노출 |
+| `timeVariant` | `'aa-hh-mm' \| 'aa-hh' \| 'hh-mm'` | `'aa-hh-mm'` | `hasTime`일 때 시간 선택에 사용하는 TimePicker의 variant |
+| `actionArea` | `boolean` | `true` | 팝오버 하단 액션 영역 노출 여부. `false`면 날짜 선택 즉시 `onChange` 호출 |
+| `actionSub` | `boolean` | `true` | 액션 영역 보조 영역(기본: "오늘" 텍스트 버튼) 노출 여부 |
+| `actionSubContent` | `DatePickerActionContent` | — | 보조 영역 커스텀 콘텐츠 |
+| `actionMain` | `boolean` | `true` | 액션 영역 메인 영역(기본: "적용" 버튼) 노출 여부 |
+| `actionMainType` | `'fill' \| 'text'` | `'text'` | 메인 "적용" 버튼 스타일. `actionMainContent` 지정 시 무시 |
+| `actionMainContent` | `DatePickerActionContent` | — | 메인 영역 커스텀 콘텐츠 |
+| `monthYearActionArea` | `boolean` | `true` | 헤더의 년/월 라벨 클릭 시 년/월 빠른 선택 뷰로 전환할지 여부 |
+| `isDateDisabled` | `(date: Date) => boolean` | — | 특정 날짜를 선택 불가 처리하는 판별 함수 |
+| `customStyle` | `CSSProperties` | — | 루트 컨테이너에 적용할 추가 스타일 |
+
+이 외에 i18n을 위한 라벨·포맷 재정의 props를 제공합니다 — `startLabel`(`'시작'`) · `endLabel`(`'종료'`) · `timeNowLabel`(`'현재'`) · `monthYearResetLabel`(`'초기화'`) · `wheelApplyLabel`(`'적용'`) · `weekdayLabels`(월요일부터 7개, 기본 `['월', ..., '일']`) · `amLabel`(`'오전'`) · `pmLabel`(`'오후'`) · `prevMonthLabel` · `nextMonthLabel` · `openCalendarLabel` · `timePlaceholder` · `formatMonthYear` · `formatTime`.
+
+`DatePickerActionContent`는 `ReactNode` 또는 `({ onClick }) => ReactNode` 함수를 받습니다. 함수형은 기본 동작 핸들러(`onClick`)를 전달받으므로, i18n 라벨 등 텍스트만 바꾼 커스텀 요소에 기본 동작을 그대로 재사용할 수 있습니다.
+
+## TimePicker
+
+휠 팝오버로 시간을 선택하는 컴포넌트입니다. 값은 `{ hours, minutes }` 형태의 `TimePickerValue`(24시간제)를 사용합니다.
+
+<Demo column>
+  <TimePickerBasicDemo />
+</Demo>
+
+```tsx
+import { useState } from 'react'
+import { TimePicker } from '@idbrnd/design-system'
+import type { TimePickerValue } from '@idbrnd/design-system'
+
+function TimePickerExample() {
+  const [time, setTime] = useState<TimePickerValue | null>(null)
+
+  return (
+    <>
+      <TimePicker heading="시간 (aa-hh-mm)" value={time} onChange={setTime} />
+      <TimePicker heading="시간 (aa-hh)" variant="aa-hh" value={time} onChange={setTime} />
+      <TimePicker heading="시간 (hh-mm)" variant="hh-mm" value={time} onChange={setTime} />
+    </>
+  )
+}
+```
+
+### 트리거
+
+`field`는 클릭 시에만 팝오버가 열리고, `compact`는 라벨 없이 값만 노출하는 작은 셀렉트박스 형태로 다른 컴포넌트 안에 인라인으로 임베드할 때 사용합니다(DatePicker의 시작/종료 시간 필드가 이 형태입니다).
+
+<Demo column>
+  <TimePickerTriggerDemo />
+</Demo>
+
+```tsx
+<TimePicker heading="시간 (field 트리거)" trigger="field" value={time} onChange={setTime} />
+<TimePicker trigger="compact" value={time} onChange={setTime} />
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `value` | `TimePickerValue \| null` | — | **(필수)** 현재 선택된 값 (`{ hours: number; minutes: number }`, 24시간제) |
+| `onChange` | `(value: TimePickerValue) => void` | — | **(필수)** 값 변경 콜백. `actionArea={false}`면 값 선택 즉시 호출 |
+| `variant` | `'aa-hh-mm' \| 'aa-hh' \| 'hh-mm'` | `'aa-hh-mm'` | `aa-hh-mm`: 오전/오후+시+분(3열), `aa-hh`: 오전/오후+시(2열), `hh-mm`: 24시간제 시+분(2열) |
+| `trigger` | `'icon' \| 'field' \| 'compact'` | `'icon'` | 트리거 형태. `icon`은 `hh-mm`에서만 직접 입력이 가능하고, 오전/오후 컬럼이 있는 variant에서는 `field`처럼 동작 |
+| `heading` | `string` | — | 상단 라벨. 미지정 시 라벨 영역 미노출 |
+| `required` | `boolean` | `false` | 필수 입력 여부. 라벨 노출 시 `*` 표시 |
+| `placeholder` | `string` | 자동 계산 | 트리거 placeholder. 미지정 시 variant에 맞는 형식(`AA HH:MM` 등) |
+| `disabled` | `boolean` | `false` | 전체 비활성화 |
+| `actionArea` | `boolean` | `true` | 팝오버 하단 액션 영역 노출 여부. `false`면 값 선택 즉시 `onChange` 호출 |
+| `actionSub` | `boolean` | `true` | 액션 영역 보조 영역(기본: "현재" 텍스트 버튼) 노출 여부 |
+| `actionSubContent` | `TimePickerActionContent` | — | 보조 영역 커스텀 콘텐츠 (`ReactNode` 또는 `({ onClick }) => ReactNode`) |
+| `actionMain` | `boolean` | `true` | 액션 영역 메인 영역(기본: "적용" 버튼) 노출 여부 |
+| `actionMainType` | `'fill' \| 'text'` | `'text'` | 메인 "적용" 버튼 스타일. `actionMainContent` 지정 시 무시 |
+| `actionMainContent` | `TimePickerActionContent` | — | 메인 영역 커스텀 콘텐츠 |
+| `nowLabel` | `string` | `'현재'` | 휠 팝오버의 "현재" 버튼 라벨 |
+| `applyLabel` | `string` | `'적용'` | 휠 팝오버의 "적용" 버튼 라벨 |
+| `amLabel` | `string` | `'오전'` | 오전(AM) 라벨 |
+| `pmLabel` | `string` | `'오후'` | 오후(PM) 라벨 |
+| `formatTime` | `(hours: number, minutes: number) => string` | — | 트리거에 표시되는 시간 포맷 재정의 (i18n용). `hours`는 0~23 |
+| `openLabel` | `string` | `'시간 선택 열기'` | 트리거 아이콘 버튼 aria-label |
+| `customStyle` | `CSSProperties` | — | 루트 컨테이너에 적용할 추가 스타일 |
+
+## 유의사항
+
+- 두 컴포넌트 모두 controlled 전용입니다. `value`를 직접 관리해야 하며 uncontrolled 사용은 지원하지 않습니다.
+- 기본 상태(`actionArea={true}`)에서는 팝오버의 "적용" 버튼을 눌러야 `onChange`가 호출됩니다. 선택 즉시 반영하려면 `actionArea={false}`를 사용하세요.
+- `TimePicker`에서 오전/오후 컬럼이 있는 variant(`aa-hh-mm`, `aa-hh`)는 `amLabel`/`pmLabel` 문자열을 그대로 입력받아야 해서 직접 입력이 비활성화됩니다. 직접 입력이 필요하면 `hh-mm`(24시간제)을 사용하세요.
+- `DatePicker`의 년/월 라벨을 클릭하면 년/월 빠른 선택 뷰로 전환됩니다 (`monthYearActionArea={false}`로 비활성화 가능).
