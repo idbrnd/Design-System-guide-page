@@ -10,7 +10,7 @@
 | 문서 엔진 | Nextra 3 + `nextra-theme-docs` |
 | 런타임 | React 18 |
 | 언어 | TypeScript |
-| 대상 패키지 | `@idbrnd/design-system@3.0.2` |
+| 대상 패키지 | `@idbrnd/design-system@4.2.2` |
 
 > 문서 사이트 자체는 라이트 모드 전용입니다(`theme.config.tsx`의 `forcedTheme: 'light'`).
 
@@ -38,7 +38,7 @@ pages/
 ├─ getting-started.mdx    # 시작하기 (설치·스타일 로드)
 ├─ icons.mdx              # 아이콘 갤러리
 ├─ tokens/                # 디자인 토큰 (색상·타이포그래피·간격·라운드&그림자)
-└─ components/            # 컴포넌트 12종 (버튼·입력·Select·Tab·테이블 등)
+└─ components/            # 컴포넌트 14종 (버튼·입력·Dialog·Picker·테이블 등)
 ```
 
 MDX 안에서 `@idbrnd/design-system`의 컴포넌트를 직접 import해 렌더링합니다. `next.config.mjs`의 `transpilePackages` 설정이 이를 지원합니다.
