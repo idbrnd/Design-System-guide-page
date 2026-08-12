@@ -1,9 +1,9 @@
-import { FillButton, OutlineButton, TextButton, WeakButton } from '@idbrnd/design-system'
+import { CircleCheckIcon, FillButton, OutlineButton, TertiaryButton, TextButton, WeakButton } from '@idbrnd/design-system'
 import Demo from '../../components/Demo'
 
 # 버튼
 
-텍스트 버튼 계열 4종입니다. 모든 버튼은 네이티브 `<button>` 속성(`onClick`, `disabled`, `type`, `aria-*` 등)을 그대로 사용할 수 있습니다.
+텍스트 버튼 계열 5종입니다. 모든 버튼은 네이티브 `<button>` 속성(`onClick`, `disabled`, `type`, `aria-*` 등)을 그대로 사용할 수 있습니다.
 
 ## 공통 Props
 
@@ -115,6 +115,43 @@ import { TextButton } from '@idbrnd/design-system'
 | `variant` | `'primary' \| 'assistive' \| 'secondary'` | `'primary'` | 색상 변형 |
 
 나머지는 [공통 Props](#공통-props)와 동일합니다.
+
+## TertiaryButton
+
+낮은 위계의 3차 액션 버튼입니다. 다른 버튼 계열과 달리 `widthType`과 `xsmall` 크기를 지원하지 않고, 대신 `leadingIcon`/`trailingIcon` 슬롯을 제공합니다.
+
+<Demo>
+  <TertiaryButton variant="fill">기본</TertiaryButton>
+  <TertiaryButton variant="tinted">틴티드</TertiaryButton>
+  <TertiaryButton variant="gray">그레이</TertiaryButton>
+  <TertiaryButton variant="primary">프라이머리</TertiaryButton>
+  <TertiaryButton leadingIcon={<CircleCheckIcon size={16} />}>아이콘</TertiaryButton>
+  <TertiaryButton loading>로딩</TertiaryButton>
+  <TertiaryButton disabled>비활성화</TertiaryButton>
+</Demo>
+
+```tsx
+import { CircleCheckIcon, TertiaryButton } from '@idbrnd/design-system'
+
+<TertiaryButton variant="fill">기본</TertiaryButton>
+<TertiaryButton variant="tinted">틴티드</TertiaryButton>
+<TertiaryButton variant="gray">그레이</TertiaryButton>
+<TertiaryButton variant="primary">프라이머리</TertiaryButton>
+<TertiaryButton leadingIcon={<CircleCheckIcon size={16} />}>아이콘</TertiaryButton>
+<TertiaryButton loading>로딩</TertiaryButton>
+<TertiaryButton disabled>비활성화</TertiaryButton>
+```
+
+### Props
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `variant` | `'fill' \| 'tinted' \| 'gray' \| 'primary'` | `'fill'` | `fill`: 옅은 회색 배경, `tinted`: 어두운 반투명 배경, `gray`: 흰 배경 + 회색 테두리, `primary`: 흰 배경 + 프라이머리 테두리 |
+| `size` | `'large' \| 'medium' \| 'small'` | `'medium'` | 버튼 크기 (`xsmall` 없음) |
+| `leadingIcon` | `ReactNode` | — | 텍스트 좌측 아이콘 슬롯 |
+| `trailingIcon` | `ReactNode` | — | 텍스트 우측 아이콘 슬롯 |
+
+`loading`, `disabled`, `keepFocusOnClick`, `customStyle`은 [공통 Props](#공통-props)와 동일하며, `widthType`은 지원하지 않습니다.
 
 ## WeakButton
 
